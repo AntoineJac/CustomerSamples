@@ -153,8 +153,6 @@
                 $adUnitData = $adUnit.data(storeAs);
                 if ($adUnitData) {
                     // Get existing ad unit
-                    //    googleAdUnit = $adUnitData;
-                    
                     googleAdUnit = $adUnitData;
                     window.googletag.pubads().refresh([$adUnitData]);
                 } else {
