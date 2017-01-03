@@ -151,6 +151,13 @@
             // Push commands to DFP to create ads
             window.googletag.cmd.push(function() {
                 $adUnitData = $adUnit.data(storeAs);
+                if ($adUnitData) {
+                    // Get existing ad unit
+                    //    googleAdUnit = $adUnitData;
+                    
+                    googleAdUnit = $adUnitData;
+                    window.googletag.pubads().refresh([$adUnitData]);
+                } else {
                     // Create the ad - out of page or normal
                     if ($adUnit.data('outofpage')) {
                         googleAdUnit = window.googletag.defineOutOfPageSlot('/' + dfpID + '/' + adUnitName, adUnitID).addService(window.googletag.pubads());
@@ -160,7 +167,8 @@
                         // Display has to be called before
                         // refresh and after the slot div is in the page.
 
-                    }    
+                    }
+                }
                 // Sets custom targeting for just THIS ad unit if it has been specified
                 var targeting = $adUnit.data('targeting');
                 if (targeting) {
