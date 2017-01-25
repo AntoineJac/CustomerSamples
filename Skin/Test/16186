@@ -1,0 +1,34 @@
+<script id='rubiconclient'
+        src='http://secure-assets.rubiconproject.com/utils/rubiskins/rubiskin.min.js'
+        data-rp-elementmarker='#wrapper'
+        data-rp-insertionmarker='<body>'
+        data-rp-expandermarker='#wrapper'
+        data-rp-custom_style=‘.container{margin-top:250px;}#wrapper {margin: 0 auto;max-width: 1200px!important;}header,#wrapper,footer {z-index: 100 !important;position: relative !important;}footer {z-index: 100!important;}header {z-index: 200!important;}'
+        data-rp-bg_scroll_ypos='58'
+        data-rp-bg_start_ypos='98'
+        data-rp-bg_fixed_ypos='40'
+        data-rp-layout_mode='wall1800x1000'
+        data-rp-insertion_position='prepend'>
+
+</script>
+<!--  Begin Rubicon Project Tag -->
+<!--  Site: JAPAC Skins Test   Zone: JAPAC SKINS TEST   Size: Wallpaper/Skin  -->
+<script language="JavaScript" type="text/javascript">
+rp_account   = '8263';
+rp_site      = '107998';
+rp_zonesize  = '506046-68';
+rp_adtype    = 'js';
+rp_smartfile = '[SMART FILE URL]';
+</script>
+<script type="text/javascript" src="https://ads.rubiconproject.com/ad/8263.js"></script>
+<!--  End Rubicon Project Tag -->
+
+/*
+Instructions: 
+1. Implement above tag within publisher ad server
+	- Traffic as Out of Page (1x1) ad unit
+	- Ensure script is loaded within a 'friendly iframe' 
+2. Target ad server campaign to test page 
+3. Notify Rubicon Project so we can initiate testing 
+4. Adjust tag according to test results and approve publisher once satisfactory pass
+*/
