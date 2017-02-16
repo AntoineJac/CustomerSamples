@@ -3,7 +3,7 @@
 
      if (window.location.pathname != "/") {
 
-     	document.write('<scr'+'ipt type="text/javascript" src="http://ads.rubiconproject.com/header/10800.js" id="fastlane-express" data-flex="on">    </scr'+'ipt>');
+     	document.write('<scr'+'ipt type="text/javascript" src="//ads.rubiconproject.com/header/10800.js" id="fastlane-express" data-flex="on">    </scr'+'ipt>');
 
         	var googletag = googletag || {};
 		googletag.cmd = googletag.cmd || [];
