@@ -1,5 +1,5 @@
 	var lotame_id = typeof(ccauds) != "undefined" ? lotame_id = ccauds.Profile.pid : "";
-    var fluid = 'fluid';
+    	var fluid = 'fluid';
 
      if (window.location.pathname != "/") {
 
