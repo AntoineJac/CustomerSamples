@@ -1,0 +1,65 @@
+<script id='rubiconclient'
+        src='http://secure-assets.rubiconproject.com/utils/rubiskins/rubiskin.min.js'
+        data-rp-elementmarker='#wrapper'
+        data-rp-insertionmarker='<body>'
+        data-rp-expandermarker='#wrapper'
+        data-rp-custom_style='body{margin: 250px 200px 0px 200px}#wrapper {margin: 0 auto;max-width: 1200px!important;}#globehead{width: 970px !important; margin: 0 auto;}header,#wrapper,footer {z-index: 00 !important;position: relative !important;}footer {z-index: 00!important;}header {z-index: 00!important;}.page-topic{margin-top:0px !important}'
+        data-rp-bg_scroll_ypos='58'
+        data-rp-bg_start_ypos='98'
+        data-rp-bg_fixed_ypos='40'
+        data-rp-layout_mode='wall1800x1000'
+        data-rp-insertion_position='prepend'>
+</script>
+<!--  Begin Rubicon Project Tag -->
+<!--  Site: JAPAC Skins Test   Zone: JAPAC SKINS TEST   Size: Wallpaper/Skin  -->
+
+<script language='JavaScript' type='text/javascript'>
+    var _getViewPort = function() {
+        if (window.frameElement) {
+            return {
+                w: (window.top.innerWidth || window.top.documentElement.clientWidth || window.top.getElementsByTagName('body')[0].clientWidth),
+                h: (window.top.innerHeight || window.top.documentElement.clientHeight || window.top.getElementsByTagName('body')[0].clientHeight)
+            };
+        }
+        return {
+            w: (window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth),
+            h: (window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight)
+        };
+    };
+    var _view_port = _getViewPort();
+    _stub_config = {
+        account: '8263',
+        site: '107998',
+        zonesize: '506046-68',
+    };
+    console.log('_view_port', _view_port);
+    if (_view_port.w > 1399) {
+        document.write('<scr' + 'ipt type="text/javascript">' +
+
+            'rp_account = _stub_config.account;' +
+
+            'rp_site = _stub_config.site;' +
+
+            'rp_zonesize = _stub_config.zonesize;' +
+
+            'rp_adtype = "js";' +
+
+            '<' + '/scr' + 'ipt>' +
+
+            '<scr' + 'ipt type="text/javascript" src="https://ads.rubiconproject.com/ad/8263.js">' +
+
+            '<' + '/scr' + 'ipt>'
+
+        );
+}
+</script>
+
+<!--  End Rubicon Project Tag -->
+
+Instructions: 
+1. Implement above tag within publisher ad server
+	- Traffic as Out of Page (1x1) ad unit
+	- Ensure script is loaded within a 'friendly iframe' 
+2. Target ad server campaign to test page 
+3. Notify Rubicon Project so we can initiate testing 
+4. Adjust tag according to test results and approve publisher once satisfactory pass
