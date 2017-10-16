@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<body>
+
+<h1>This is a Heading</h1>
+<p>This is a paragraph.</p>
+<script language="JavaScript" type="text/javascript">
+
+     
+timestamp = Math.floor(Math.random()*99999999999);
+
+var test = function(){
+var myIframe = document.createElement('iframe');
+myIframe.width="300px";
+myIframe.height="250px";
+document.getElementsByTagName('body')[0].appendChild(myIframe);
+myIframe.onload= function(){
+var html = "<script src ='http://optimized-by.rubiconproject.com/a/13506/89784/422888-15.js?&cb="+timestamp+"&tk_st=1&rf=http%3A//www.w3schools.com/html/tryit.asp%3Ffilename%3Dtryhtml_default&rp_s=c&p_pos=atf&p_screen_res=1760x990&ad_slot=89784_15'><\/script>";
+myIframe.contentWindow.document.open;
+myIframe.contentWindow.document.write(html);
+myIframe.contentWindow.document.close;
+ }}; 
+ 
+ function DoTest(i){
+ setTimeout(function(){
+ alert(i);
+ var DivT = document.createElement('div');
+  var t = document.createTextNode("the iframe "+i+" is");
+    DivT.appendChild(t);
+    document.body.appendChild(DivT);
+    test();
+ }, i*3000);};
+ 
+ for (var i=1; i<3; i++){
+ DoTest(i);
+ };
+</script>
+
+</body>
+</html>
