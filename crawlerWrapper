@@ -1,0 +1,114 @@
+var fs = require('fs');
+var tt = '';
+var i = 0;
+
+var system = require('system');
+var test = function(url){
+	var NR = 0;
+var webPage = require('webpage');
+var page = webPage.create();
+page.settings.resourceTimeout = 3500;
+page.clearMemoryCache();
+page.open(url, function (status) {
+  //Page is loaded!
+  
+  console.log(url + tt);
+
+     if (status === 'fail') {
+
+            console.log('failed, thats all i know');
+            page.close();
+         
+
+        }
+  if (tt === "ok")
+  {var content1 = url + ' Pubmatic Present';
+var stream = fs.open('output.txt', 'a');
+	stream.writeLine(content1);
+	stream.close();
+}
+	else{
+	var content2 = url + ' Pubmatic Non Present';
+	var stream = fs.open('output.txt', 'a');
+	stream.writeLine(content2);
+	stream.close();
+	} 
+
+  i++;
+  line = arrdata[i];
+
+  if (line != "") {
+  	if (line.match(/http/g) == null)
+	{
+	line = "http://"+line;
+	}
+  	console.log(line);
+	console.log("LunchCrawling");
+	tt = "nok";
+	test(line);
+}
+
+else {
+console.log("Closing");
+stream.close();
+phantom.exit();
+}
+  
+});
+
+page.onResourceRequested = function(requestData, networkRequest) {
+  NR++;
+  var match = requestData.url.match(/pwt/g);
+  if (match != null) {
+  	console.log("present");
+   // console.log('Request (#' + requestData.url + '): ' + "ok");
+    //networkRequest.abort();
+    // newWordFamily.js is an alternative implementation of wordFamily.js
+    // and is available in local path
+     return tt = "ok";
+  }
+  else if (tt === "ok"){
+  	//console.log(requestData.url);
+  	networkRequest.abort();
+  	
+  	return;
+  	
+  }
+  else if (NR === 500){
+  	//console.log(requestData.url);
+  	console.log(NR);
+  	networkRequest.abort();
+  	teste();
+  	
+  	return;
+  	
+  }
+  else {
+  	//console.log(requestData.url);
+  	networkRequest.cancel();
+  }
+};
+
+var teste = function(){
+page.onResourceError = function(){page.stop()};
+};
+//page.onResourceTimeout = function() {
+//	console.log("timeout");
+//};
+page.onError = function() {
+	networkRequest.abort();
+}
+};
+
+
+var fs = require('fs'),
+    filedata = fs.read('testDomain.txt'), // read the file into a single string
+    arrdata = filedata.split(/[\r\n]/); // split the string on newline and store in array
+
+if (arrdata[0].match(/http/g) == null)
+{
+	arrdata[0] = "http://"+arrdata[0];
+}
+console.log(arrdata[0]);
+test(arrdata[0]); 
+// iterate through array
