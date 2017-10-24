@@ -1,0 +1,41 @@
+<VAST xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd" version="3.0">
+<Ad id="1234567">
+<InLine>
+<AdSystem></AdSystem>
+<AdTitle>NonLinear VPAID JS</AdTitle>
+<Description>Vpaid Linear Video Ad</Description>
+<Error>https://www.example.com/error</Error>
+<Impression>https://www.example.com/impression</Impression>
+<Creatives>
+<Creative sequence="1">
+<NonLinearAds>
+<TrackingEvents>
+<Tracking event="start">https://www.example.com/start</Tracking>
+<Tracking event="firstQuartile">https://www.example.com/firstQuartile</Tracking>
+<Tracking event="midpoint">https://www.example.com/midpoint</Tracking>
+<Tracking event="thirdQuartile">https://www.example.com/thirdQuartile</Tracking>
+<Tracking event="complete">https://www.example.com/complete</Tracking>
+<Tracking event="mute">https://www.example.com/mute</Tracking>
+<Tracking event="rewind">https://www.example.com/rewind</Tracking>
+<Tracking event="pause">https://www.example.com/pause</Tracking>
+<Tracking event="resume">https://www.example.com/resume</Tracking>
+<Tracking event="fullscreen">https://www.example.com/fullscreen</Tracking>
+<Tracking event="creativeView">https://www.example.com/creativeView</Tracking>
+<Tracking event="acceptInvitation">https://www.example.com/acceptInvitation</Tracking>
+</TrackingEvents>
+<NonLinear apiFramework="VPAID" width="300" height="60" id="overlay-1">
+<AdParameters>
+<![CDATA[{"overlays":["https://ryanthompson591.github.io/vpaidExamples/img/ClickThroughAnimatedByCss.jpg","https://ryanthompson591.github.io/vpaidExamples/img/ChangeToALinearAd.jpg"], "videos":[{"url":"https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_2mb.mp4","mimetype":"video/mp4"}]} ]]>
+</AdParameters>
+<StaticResource creativeType="application/javascript"><![CDATA[https://ryanthompson591.github.io/vpaidExamples/examples/VpaidNonLinear.js]]>
+</StaticResource>
+<NonLinearClickThrough id="GDFP">
+<![CDATA[ https://google.com ]]>
+</NonLinearClickThrough>
+</NonLinear>
+</NonLinearAds>
+</Creative>
+</Creatives>
+</InLine>
+</Ad>
+</VAST>
