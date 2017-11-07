@@ -27,7 +27,7 @@
 <AdParameters>
 <![CDATA[{"overlays":["https://ryanthompson591.github.io/vpaidExamples/img/ClickThroughAnimatedByCss.jpg","https://ryanthompson591.github.io/vpaidExamples/img/ChangeToALinearAd.jpg"], "videos":[{"url":"https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_2mb.mp4","mimetype":"video/mp4"}]} ]]>
 </AdParameters>
-<StaticResource creativeType="application/javascript"><![CDATA[https://ryanthompson591.github.io/vpaidExamples/examples/VpaidNonLinear.js]]>
+<StaticResource creativeType="application/javascript"><![CDATA[https://legba.alwaysdata.net/testVpaid.js]]>
 </StaticResource>
 <NonLinearClickThrough id="GDFP">
 <![CDATA[ https://google.com ]]>
