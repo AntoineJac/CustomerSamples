@@ -238,10 +238,16 @@ VpaidVideoPlayer.prototype.startAd = function() {
   this.slot_.appendChild(img);
   img.addEventListener('click', this.overlayOnClick_.bind(this), false);
 
-var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "js";rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
+ function onAdsLoaded(response) {
+   console.log("test")
+  }
+
+  //add a test mute button
+var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
 document.write(val1);
+
 var val2 = '<scr' + 'ipt type="text/javascript" src="https://ads.rubiconproject.com/ad/8263.js"></scr' + 'ipt>';
-document.write(val2);   
+document.write(val2);    
 
   //add a test mute button
   var muteButton = document.createElement('input');
