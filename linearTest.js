@@ -184,7 +184,7 @@ closeButton.style.right="10px"
 closeButton.style.position="absolute"
 closeButton.style.display="inline-block"
 closeButton.style.background="white"
-window.document.body.insertAdjacentElement('afterbegin', closeButton);
+this.slot_.appendChild(closeButton);
   this.countDownTimer2();
 }
 };
@@ -239,7 +239,6 @@ function onAdsLoaded(response) {
        }
    }
 }
-
 
 window.stopAd = this.stopAd.bind(this);
 window.adError = this.adError.bind(this);
