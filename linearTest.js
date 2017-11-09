@@ -162,21 +162,17 @@ VpaidVideoPlayer.prototype.timeUpdateHandler_ = function() {
 
 
 /**
+ * Helper function to update the size of the video player.
  * @private
  */
-VpaidVideoPlayer.prototype.updateVideoSlot_ = function() {
-  if (this.videoSlot_ == null) {
-    this.videoSlot_ = document.createElement('iframe');
-    this.log('Warning: No video element passed to ad, creating element.');
-    this.slot_.appendChild(this.videoSlot_);
-  }
-  // TODO right now the sdk is sending in the wrong size on init.
-  // there should be no need to change element sizes from the start.
-  //this.updateVideoPlayerSize_();
-  var foundSource = false;
-  var videos = this.parameters_.videos || [];
+VpaidVideoPlayer.prototype.updateVideoPlayerSize_ = function() {
+  try {
+    this.videoSlot_.setAttribute('width', this.attributes_['width']);
+    this.videoSlot_.setAttribute('height', this.attributes_['height']);
+    this.videoSlot_.style.width = this.attributes_['width'] + 'px';
+    this.videoSlot_.style.height = this.attributes_['height'] + 'px';
+  } catch (e) { /* no op*/}
 };
-
 
 
 /**
