@@ -171,9 +171,44 @@ VpaidVideoPlayer.prototype.handshakeVersion = function(version) {
 };
 
 
+VpaidVideoPlayer.prototype.createCloseButton = function() {
+console.log("test");
+
+var closeButton = document.createElement("div");
+closeButton.id = "demo";
+closeButton.style.width="120px"
+closeButton.style.height="16px"
+closeButton.style.bottom="10px"
+closeButton.style.right="10px"
+closeButton.style.position="absolute"
+closeButton.style.display="inline-block"
+closeButton.style.background="white"
+this.window.document.body.insertAdjacentElement('afterbegin', closeButton);   
+};
 
 
+VpaidVideoPlayer.prototype.countDownTimer2 = function() {
+// Set the date we're counting down to
 
+var CountDownTime = 5;
+// Update the count down every 1 second
+var CountDownTimer = setInterval(function() {
+if (CountDownTime < 0) {
+        clearInterval(CountDownTimer);
+        var closeButton = document.getElementById("demo");
+        closeButton.innerHTML = "Click To Skip Ad";
+        closeButton.style.cursor = "pointer";
+        closeButton.onclick = function(){
+          stopAd();
+        }       
+    }
+else{
+    var seconds = Math.floor(CountDownTime);
+  document.getElementById("demo").innerHTML = "Skip Ad in " + seconds + " s ";
+}
+   CountDownTime-- 
+}, 1000);
+};
 
 /**
  * Called by the wrapper to start the ad.
@@ -182,6 +217,7 @@ VpaidVideoPlayer.prototype.startAd = function() {
   this.log('Starting ad');
 
 function onAdsLoaded(response) {
+  createCloseButton2();
    if (response.status == "ok") {
        var ad;
        var html;
@@ -190,16 +226,7 @@ function onAdsLoaded(response) {
            if (ad.status == "ok") {
                if (ad.type == "script") {
                    document.write("<div id = 'test' style = 'width: 300px; height: 250px; top: 10%; margin: 0 auto; position: relative;'><script type='text/javascript'>"+ad.script+"</scr"+"ipt></div>"); 
-                   var closeButton = document.createElement("div");
-                  closeButton.id = "demo";
-                  closeButton.style.width="120px"
-                  closeButton.style.height="16px"
-                  closeButton.style.bottom="10px"
-                  closeButton.style.right="10px"
-                  closeButton.style.position="absolute"
-                  closeButton.style.display="inline-block"
-                  closeButton.style.background="white"
-                  window.document.body.insertAdjacentElement('afterbegin', closeButton);
+                   createCloseButton();
                }
                if (ad.type == "html") {
                    document.write(ad.html);
@@ -213,7 +240,7 @@ function onAdsLoaded(response) {
 
 window.stopAd = this.stopAd.bind(this);
 window.adError = this.adError.bind(this);
-
+window.createCloseButton2 = this.createCloseButton;
 
   //add a test mute button
 var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
