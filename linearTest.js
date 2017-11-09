@@ -171,8 +171,15 @@ VpaidVideoPlayer.prototype.handshakeVersion = function(version) {
 };
 
 
-VpaidVideoPlayer.prototype.createCloseButton = function() {
-console.log("test");
+
+
+
+
+/**
+ * Called by the wrapper to start the ad.
+ */
+VpaidVideoPlayer.prototype.startAd = function() {
+  this.log('Starting ad');
 
 var closeButton = document.createElement("div");
 closeButton.id = "demo";
@@ -183,39 +190,8 @@ closeButton.style.right="10px"
 closeButton.style.position="absolute"
 closeButton.style.display="inline-block"
 closeButton.style.background="white"
-this.slot_.appendChild(closeButton);
-  this.countDownTimer2();
-};
+window.document.body.insertAdjacentElement('afterbegin', closeButton);
 
-
-VpaidVideoPlayer.prototype.countDownTimer2 = function() {
-// Set the date we're counting down to
-
-var CountDownTime = 5;
-// Update the count down every 1 second
-var CountDownTimer = setInterval(function() {
-if (CountDownTime < 0) {
-        clearInterval(CountDownTimer);
-        var closeButton = document.getElementById("demo");
-        closeButton.innerHTML = "Click To Skip Ad";
-        closeButton.style.cursor = "pointer";
-        closeButton.onclick = function(){
-          stopAd();
-        }       
-    }
-else{
-    var seconds = Math.floor(CountDownTime);
-  document.getElementById("demo").innerHTML = "Skip Ad in " + seconds + " s ";
-}
-   CountDownTime-- 
-}, 1000);
-};
-
-/**
- * Called by the wrapper to start the ad.
- */
-VpaidVideoPlayer.prototype.startAd = function() {
-  this.log('Starting ad');
 
 function onAdsLoaded(response) {
    if (response.status == "ok") {
@@ -240,9 +216,7 @@ function onAdsLoaded(response) {
 
 window.stopAd = this.stopAd.bind(this);
 window.adError = this.adError.bind(this);
-createCloseButton2 = this.createCloseButton.bind(this);
-this.createCloseButton();
-createCloseButton2();
+
 
   //add a test mute button
 var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
