@@ -173,8 +173,7 @@ VpaidVideoPlayer.prototype.handshakeVersion = function(version) {
 
 VpaidVideoPlayer.prototype.createCloseButton = function() {
 console.log("test");
- var skippableState = this.attributes_['skippableState'];
-  if (skippableState) {
+
 var closeButton = document.createElement("div");
 closeButton.id = "demo";
 closeButton.style.width="120px"
@@ -186,7 +185,6 @@ closeButton.style.display="inline-block"
 closeButton.style.background="white"
 this.slot_.appendChild(closeButton);
   this.countDownTimer2();
-}
 };
 
 
