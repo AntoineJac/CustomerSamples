@@ -122,19 +122,6 @@ VpaidVideoPlayer.prototype.initAd = function(
 
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
-  this.updateVideoSlot_();
-  this.videoSlot_.addEventListener(
-      'timeupdate',
-      this.timeUpdateHandler_.bind(this),
-      false);
-  this.videoSlot_.addEventListener(
-      'ended',
-      this.stopAd.bind(this),
-      false);
-  this.videoSlot_.addEventListener(
-      'play',
-      this.videoResume_.bind(this),
-      false);
   this.callEvent_('AdLoaded');
 };
 
@@ -179,7 +166,7 @@ VpaidVideoPlayer.prototype.timeUpdateHandler_ = function() {
  */
 VpaidVideoPlayer.prototype.updateVideoSlot_ = function() {
   if (this.videoSlot_ == null) {
-    this.videoSlot_ = document.createElement('video');
+    this.videoSlot_ = document.createElement('iframe');
     this.log('Warning: No video element passed to ad, creating element.');
     this.slot_.appendChild(this.videoSlot_);
   }
@@ -220,7 +207,6 @@ VpaidVideoPlayer.prototype.handshakeVersion = function(version) {
  */
 VpaidVideoPlayer.prototype.startAd = function() {
   this.log('Starting ad');
-  this.videoSlot_.play();
   var img = document.createElement('img');
   img.src = this.parameters_.overlay || '';
   this.slot_.appendChild(img);
