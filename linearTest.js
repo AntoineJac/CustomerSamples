@@ -171,12 +171,28 @@ VpaidVideoPlayer.prototype.handshakeVersion = function(version) {
 };
 
 
-
+VpaidVideoPlayer.prototype.createCloseButton = function() {
+console.log("test");
+ var skippableState = this.attributes_['skippableState'];
+  if (skippableState) {
+var closeButton = document.createElement("div");
+closeButton.id = "demo";
+closeButton.style.width="120px"
+closeButton.style.height="16px"
+closeButton.style.bottom="10px"
+closeButton.style.right="10px"
+closeButton.style.position="absolute"
+closeButton.style.display="inline-block"
+closeButton.style.background="white"
+this.slot_.appendChild(closeButton);
+  this.countDownTimer2();
+}
+};
 
 
 VpaidVideoPlayer.prototype.countDownTimer2 = function() {
 // Set the date we're counting down to
-console.log("fffggtest");
+
 var CountDownTime = 5;
 // Update the count down every 1 second
 var CountDownTimer = setInterval(function() {
@@ -204,18 +220,6 @@ VpaidVideoPlayer.prototype.startAd = function() {
   this.log('Starting ad');
 
 function onAdsLoaded(response) {
-
-  var closeButton = document.createElement("div");
-closeButton.id = "demo";
-closeButton.style.width="120px"
-closeButton.style.height="16px"
-closeButton.style.bottom="10px"
-closeButton.style.right="10px"
-closeButton.style.position="absolute"
-closeButton.style.display="inline-block"
-closeButton.style.background="white"
-window.document.body.insertAdjacentElement('afterbegin', closeButton);   
-
    if (response.status == "ok") {
        var ad;
        var html;
@@ -224,7 +228,16 @@ window.document.body.insertAdjacentElement('afterbegin', closeButton);
            if (ad.status == "ok") {
                if (ad.type == "script") {
                    document.write("<div id = 'test' style = 'width: 300px; height: 250px; top: 10%; margin: 0 auto; position: relative;'><script type='text/javascript'>"+ad.script+"</scr"+"ipt></div>"); 
-                   createCloseButton();
+                   var closeButton = document.createElement("div");
+closeButton.id = "demo";
+closeButton.style.width="120px"
+closeButton.style.height="16px"
+closeButton.style.bottom="10px"
+closeButton.style.right="10px"
+closeButton.style.position="absolute"
+closeButton.style.display="inline-block"
+closeButton.style.background="white"
+window.document.body.insertAdjacentElement('afterbegin', closeButton);
                }
                if (ad.type == "html") {
                    document.write(ad.html);
@@ -238,7 +251,7 @@ window.document.body.insertAdjacentElement('afterbegin', closeButton);
 
 window.stopAd = this.stopAd.bind(this);
 window.adError = this.adError.bind(this);
-//countDownTimer2 = this.countDownTimer2.bind(this);
+
 
   //add a test mute button
 var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
