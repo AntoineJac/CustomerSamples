@@ -120,24 +120,6 @@ VpaidVideoPlayer.prototype.initAd = function(
   // Parse the incoming parameters.
   this.parameters_ = JSON.parse(creativeData['AdParameters']);
 
-  this.log('initAd ' + width + 'x' + height +
-      ' ' + viewMode + ' ' + desiredBitrate);
-  this.updateVideoSlot_();
-  this.videoSlot_.addEventListener(
-      'timeupdate',
-      this.timeUpdateHandler_.bind(this),
-      false);
-  this.videoSlot_.addEventListener(
-      'ended',
-      this.stopAd.bind(this),
-      false);
-  this.videoSlot_.addEventListener(
-      'play',
-      this.videoResume_.bind(this),
-      false);
-  this.callEvent_('AdLoaded');
-};
-
 
 /**
  * Called when the overlay is clicked.
