@@ -172,7 +172,7 @@ VpaidVideoPlayer.prototype.handshakeVersion = function(version) {
 
 
 VpaidVideoPlayer.prototype.createCloseButton = function() {
-
+console.log("test");
  var skippableState = this.attributes_['skippableState'];
   if (skippableState) {
 var closeButton = document.createElement("div");
@@ -242,8 +242,9 @@ function onAdsLoaded(response) {
 
 window.stopAd = this.stopAd.bind(this);
 window.adError = this.adError.bind(this);
-createCloseButton = this.createCloseButton.bind(this);
-createCloseButton();
+createCloseButton2 = this.createCloseButton.bind(this);
+this.createCloseButton();
+createCloseButton2();
 
   //add a test mute button
 var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
