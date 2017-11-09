@@ -215,7 +215,6 @@ closeButton.style.position="absolute"
 closeButton.style.display="inline-block"
 closeButton.style.background="white"
 window.document.body.insertAdjacentElement('afterbegin', closeButton);   
-this.countDownTimer2();
 
    if (response.status == "ok") {
        var ad;
@@ -239,7 +238,7 @@ this.countDownTimer2();
 
 window.stopAd = this.stopAd.bind(this);
 window.adError = this.adError.bind(this);
-countDownTimer2 = this.countDownTimer2.bind(this);
+//countDownTimer2 = this.countDownTimer2.bind(this);
 
   //add a test mute button
 var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
