@@ -139,7 +139,7 @@ if (CountDownTime < 0) {
         closeButton.innerHTML = "Click To Skip Ad";
         closeButton.style.cursor = "pointer";
         closeButton.onclick = function(){
-          stopAd();
+         
         }       
     }
 else{
@@ -180,7 +180,7 @@ window.rubiconTimeout = false;
                  
              }
          }
-     }
+     } else {
 
      }
   }
@@ -196,8 +196,6 @@ document.write(val1);
 
 var val2 = '<scr' + 'ipt type="text/javascript" src="https://ads.rubiconproject.com/ad/8263.js"></scr' + 'ipt>';
 document.write(val2); 
-
-
 
 
   this.callEvent_('AdStarted');
