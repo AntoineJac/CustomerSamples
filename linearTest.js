@@ -1,4 +1,13 @@
 /**
+ * @fileoverview A VPAID ad useful for testing functionality of the sdk.
+ * This particular ad will just play a video.
+ *
+ * @author ryanthompson@google.com (Ryan Thompson)
+ */
+
+
+
+/**
  * @constructor
  */
 var VpaidVideoPlayer = function() {
@@ -33,29 +42,66 @@ var VpaidVideoPlayer = function() {
   this.attributes_ = {
     'companions' : '',
     'desiredBitrate' : 256,
-    'duration': 15,
+    'duration': 30,
     'expanded' : false,
     'height' : 0,
     'icons' : false,
     'linear' : true,
-    'remainingTime' : 15,
-    'skippableState' : true,
+    'remainingTime' : 13,
+    'skippableState' : false,
     'viewMode' : 'normal',
     'width' : 0,
     'volume' : 1.0
   };
 
-  
-  var data;
-  rubiconTimeout = true;
+  /**
+   * @type {?number} id of the interval used to synch remaining time
+   * @private
+   */
+  this.intervalId_ = null;
+
+  /**
+   * A set of events to be reported.
+   * @type {Object}
+   * @private
+   */
+  this.quartileEvents_ = [
+    {event: 'AdImpression', value: 0},
+    {event: 'AdVideoStart', value: 0},
+    {event: 'AdVideoFirstQuartile', value: 25},
+    {event: 'AdVideoMidpoint', value: 50},
+    {event: 'AdVideoThirdQuartile', value: 75},
+    {event: 'AdVideoComplete', value: 100}
+  ];
+
+  /**
+   * @type {number} An index into what quartile was last reported.
+   * @private
+   */
+  this.lastQuartileIndex_ = 0;
+
+  /**
+   * An array of urls and mimetype pairs.
+   *
+   * @type {!object}
+   * @private
+   */
+  this.parameters_ = {};
 };
 
 
 /**
  * VPAID defined init ad, initializes all attributes in the ad.  The ad will
  * not start until startAd is called.
+ *
+ * @param {number} width The ad width.
+ * @param {number} height The ad heigth.
+ * @param {string} viewMode The ad view mode.
+ * @param {number} desiredBitrate The desired bitrate.
+ * @param {Object} creativeData Data associated with the creative.
+ * @param {Object} environmentVars Variables associated with the creative like
+ *     the slot and video slot.
  */
-
 VpaidVideoPlayer.prototype.initAd = function(
     width,
     height,
@@ -69,6 +115,7 @@ VpaidVideoPlayer.prototype.initAd = function(
   this.attributes_['viewMode'] = viewMode;
   this.attributes_['desiredBitrate'] = desiredBitrate;
   this.slot_ = environmentVars.slot;
+  this.videoSlot_ = environmentVars.videoSlot;
 
   // Parse the incoming parameters.
   data = JSON.parse(creativeData['AdParameters']);
@@ -98,6 +145,8 @@ VpaidVideoPlayer.prototype.initAd = function(
 };
 
 
+
+
 /**
  * Helper function to update the size of the video player.
  * @private
@@ -110,6 +159,7 @@ VpaidVideoPlayer.prototype.updateVideoPlayerSize_ = function() {
     this.videoSlot_.style.height = this.attributes_['height'] + 'px';
   } catch (e) { /* no op*/}
 };
+
 
 /**
  * Returns the versions of VPAID ad supported.
@@ -169,52 +219,47 @@ else{
 VpaidVideoPlayer.prototype.startAd = function() {
   this.log('Starting ad');
 
- function onAdsLoaded(response) {
-   
+function onAdsLoaded(response) {
+   if (response.status == "ok") {
+       var ad;
+       var html;
+       for (var i = 0; i < response.ads.length; i++) {
+           ad = response.ads[i];
+           if (ad.status == "ok") {
+               if (ad.type == "script") {
+                   document.write("<div id = 'test' style = 'width: 300px; height: 250px; top: 10%; margin: 0 auto; position: relative;'><script type='text/javascript'>"+ad.script+"</scr"+"ipt></div>"); 
+               }
+               if (ad.type == "html") {
+                   document.write(ad.html);
+               }
+           } else {
+                document.write("<div>status="+ad.status+"</div>");
+           }
+       }
+   }
+}
 
-     if (response.status == "ok") {      
-         var ad;
-         var html;
-         for (var i = 0; i < response.ads.length; i++) {
-             ad = response.ads[i];
-             if (ad.status == "ok") {
-                 if (ad.type == "script") {
-                    document.write("<div id = 'test' style = 'width: 300px; height: 250px; top: 10%; margin: 0 auto; position: relative;'><script type='text/javascript'>"+ad.script+"</scr"+"ipt></div>"); 
-                 }
-                 if (ad.type == "html") {
-                    document.write("<div id = 'test' style = 'width: 300px; height: 250px; top: 10%; margin: 0 auto; position: relative;'>"+ad.html+"</div>");                
-                 }
-             } else {                
-             }
-         }
-     }
-     else {
-     }
-  }
 
 window.stopAd = this.stopAd.bind(this);
-window.adError = this.adError.bind(this);
-window.createCloseButton = this.createCloseButton.bind(this);
-
-   setTimeout(function(){
-    if (window.rubiconTimeout) {
-  stopAd(); }
-},this.timeoutRubicon);
 
   //add a test mute button
-var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "'+this.accountId+'"; rp_site      = "'+this.siteId+'"; rp_zonesize  = "'+zoneIdF+'"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
+var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
 document.write(val1);
 
 var val2 = '<scr' + 'ipt type="text/javascript" src="https://ads.rubiconproject.com/ad/8263.js"></scr' + 'ipt>';
-document.write(val2); 
+document.write(val2);    
 
-  setTimeout(function(){
-  stopAd();
-},this.timeoutDisplay);
+  //add a test mute button
+  var muteButton = document.createElement('input');
+  muteButton.setAttribute('type', 'button');
+  muteButton.setAttribute('value', 'mute/unMute');
 
+  muteButton.addEventListener('click',
+      this.muteButtonOnClick_.bind(this),
+      false);
+  this.slot_.appendChild(muteButton);
 
   this.callEvent_('AdStarted');
-  this.callEvent_('AdImpression');
 };
 
 
@@ -232,10 +277,6 @@ VpaidVideoPlayer.prototype.stopAd = function() {
   setTimeout(callback, 75, ['AdStopped']);
 };
 
-VpaidVideoPlayer.prototype.adError = function() {
-  this.log('adError');
-  this.callEvent_('AdError');
-};
 
 /**
  * @param {number} value The volume in percentage.
