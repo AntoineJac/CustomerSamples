@@ -171,25 +171,12 @@ VpaidVideoPlayer.prototype.handshakeVersion = function(version) {
 };
 
 
-VpaidVideoPlayer.prototype.createCloseButton = function() {
-console.log("test");
 
-var closeButton = document.createElement("div");
-closeButton.id = "demo";
-closeButton.style.width="120px"
-closeButton.style.height="16px"
-closeButton.style.bottom="10px"
-closeButton.style.right="10px"
-closeButton.style.position="absolute"
-closeButton.style.display="inline-block"
-closeButton.style.background="white"
-this.window.document.body.insertAdjacentElement('afterbegin', closeButton);   
-};
 
 
 VpaidVideoPlayer.prototype.countDownTimer2 = function() {
 // Set the date we're counting down to
-
+console.log("fffggtest");
 var CountDownTime = 5;
 // Update the count down every 1 second
 var CountDownTimer = setInterval(function() {
@@ -217,7 +204,19 @@ VpaidVideoPlayer.prototype.startAd = function() {
   this.log('Starting ad');
 
 function onAdsLoaded(response) {
-  createCloseButton2();
+
+  var closeButton = document.createElement("div");
+closeButton.id = "demo";
+closeButton.style.width="120px"
+closeButton.style.height="16px"
+closeButton.style.bottom="10px"
+closeButton.style.right="10px"
+closeButton.style.position="absolute"
+closeButton.style.display="inline-block"
+closeButton.style.background="white"
+window.document.body.insertAdjacentElement('afterbegin', closeButton);   
+this.countDownTimer2();
+
    if (response.status == "ok") {
        var ad;
        var html;
@@ -240,7 +239,7 @@ function onAdsLoaded(response) {
 
 window.stopAd = this.stopAd.bind(this);
 window.adError = this.adError.bind(this);
-window.createCloseButton2 = this.createCloseButton;
+countDownTimer2 = this.countDownTimer2.bind(this);
 
   //add a test mute button
 var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
