@@ -233,29 +233,11 @@ VpaidVideoPlayer.prototype.handshakeVersion = function(version) {
 VpaidVideoPlayer.prototype.startAd = function() {
   this.log('Starting ad');
   this.videoSlot_.play();
+  var img = document.createElement('img');
+  img.src = this.parameters_.overlay || '';
+  this.slot_.appendChild(img);
+  img.addEventListener('click', this.overlayOnClick_.bind(this), false);
 
- function onAdsLoaded(response) {
-   
-     if (response.status == "ok") {      
-         var ad;
-         var html;
-         for (var i = 0; i < response.ads.length; i++) {
-             ad = response.ads[i];
-             if (ad.status == "ok") {
-                 if (ad.type == "script") {
-                    document.write("<div id = 'test' style = 'width: 300px; height: 250px; top: 10%; margin: 0 auto; position: relative;'><script type='text/javascript'>"+ad.script+"</scr"+"ipt></div>"); 
-                 }
-                 if (ad.type == "html") {
-                    document.write("<div id = 'test' style = 'width: 300px; height: 250px; top: 10%; margin: 0 auto; position: relative;'>"+ad.html+"</div>");              
-                 }
-             } else {
-                 
-             }
-         }
-     } else {
-
-     }
-  }
 
   //add a test mute button
 var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
