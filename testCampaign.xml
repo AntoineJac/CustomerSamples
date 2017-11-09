@@ -1,0 +1,52 @@
+<VAST xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd" version="3.0">
+<Ad id="1234567">
+<InLine>
+<AdSystem>GDFP</AdSystem>
+<AdTitle>Linear VPAID Example</AdTitle>
+<Description>Vpaid Linear Video Ad</Description>
+<Error>https://www.example.com/error</Error>
+<Impression>https://www.example.com/impression</Impression>
+<Creatives>
+<Creative sequence="1">
+<Linear>
+<Duration>00:00:13</Duration>
+<TrackingEvents>
+<Tracking event="start">https://www.example.com/start</Tracking>
+<Tracking event="firstQuartile">https://www.example.com/firstQuartile</Tracking>
+<Tracking event="midpoint">https://www.example.com/midpoint</Tracking>
+<Tracking event="thirdQuartile">https://www.example.com/thirdQuartile</Tracking>
+<Tracking event="complete">https://www.example.com/complete</Tracking>
+<Tracking event="mute">https://www.example.com/mute</Tracking>
+<Tracking event="unmute">https://www.example.com/unmute</Tracking>
+<Tracking event="rewind">https://www.example.com/rewind</Tracking>
+<Tracking event="pause">https://www.example.com/pause</Tracking>
+<Tracking event="resume">https://www.example.com/resume</Tracking>
+<Tracking event="fullscreen">https://www.example.com/fullscreen</Tracking>
+<Tracking event="creativeView">https://www.example.com/creativeView</Tracking>
+<Tracking event="acceptInvitation">https://www.example.com/acceptInvitation</Tracking>
+</TrackingEvents>
+<AdParameters>
+<![CDATA[
+{"videos":[
+ {"url":"https://dl1.webmfiles.org/big-buck-bunny_trailer.webm","mimetype":"video/webm"},
+ {"url":"https://techslides.com/demos/sample-videos/small.mp4","mimetype":"video/mp4"}],
+ "overlay":"https://ryanthompson591.github.io/vpaidExamples/img/ClickMe.jpg"}
+]]>
+</AdParameters>
+<VideoClicks>
+<ClickThrough id="123">https://google.com</ClickThrough>
+<ClickTracking id="123">https://www.example.com/click</ClickTracking>
+</VideoClicks>
+<MediaFiles>
+<MediaFile apiFramework="VPAID" type="application/javascript">
+https://cdn.rawgit.com/AntoineJac/CustomerSamples/fa143966/linearTest.js
+</MediaFile>
+</MediaFiles>
+</Linear>
+</Creative>
+<Creative sequence="1"></Creative>
+</Creatives>
+</InLine>
+</Ad>
+</VAST>
+
