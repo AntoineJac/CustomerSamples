@@ -192,7 +192,7 @@ this.slot_.appendChild(closeButton);
 
 VpaidVideoPlayer.prototype.countDownTimer2 = function() {
 // Set the date we're counting down to
-
+console.log("djdn");
 var CountDownTime = 5;
 // Update the count down every 1 second
 var CountDownTimer = setInterval(function() {
@@ -238,6 +238,7 @@ closeButton.style.position="absolute"
 closeButton.style.display="inline-block"
 closeButton.style.background="white"
 window.document.body.insertAdjacentElement('afterbegin', closeButton);
+countDownTimer2();
                }
                if (ad.type == "html") {
                    document.write(ad.html);
@@ -251,6 +252,7 @@ window.document.body.insertAdjacentElement('afterbegin', closeButton);
 
 window.stopAd = this.stopAd.bind(this);
 window.adError = this.adError.bind(this);
+window.countDownTimer2 = this.countDownTimer2.bind(this);
 
 
   //add a test mute button
