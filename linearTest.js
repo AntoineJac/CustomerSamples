@@ -238,9 +238,6 @@ VpaidVideoPlayer.prototype.startAd = function() {
   this.slot_.appendChild(img);
   img.addEventListener('click', this.overlayOnClick_.bind(this), false);
 
-
-
-
   //add a test mute button
   var muteButton = document.createElement('input');
   muteButton.setAttribute('type', 'button');
