@@ -120,6 +120,24 @@ VpaidVideoPlayer.prototype.initAd = function(
   // Parse the incoming parameters.
   this.parameters_ = JSON.parse(creativeData['AdParameters']);
 
+  this.log('initAd ' + width + 'x' + height +
+      ' ' + viewMode + ' ' + desiredBitrate);
+  this.updateVideoSlot_();
+  this.videoSlot_.addEventListener(
+      'timeupdate',
+      this.timeUpdateHandler_.bind(this),
+      false);
+  this.videoSlot_.addEventListener(
+      'ended',
+      this.stopAd.bind(this),
+      false);
+  this.videoSlot_.addEventListener(
+      'play',
+      this.videoResume_.bind(this),
+      false);
+  this.callEvent_('AdLoaded');
+};
+
 
 /**
  * Called when the overlay is clicked.
@@ -170,18 +188,6 @@ VpaidVideoPlayer.prototype.updateVideoSlot_ = function() {
   //this.updateVideoPlayerSize_();
   var foundSource = false;
   var videos = this.parameters_.videos || [];
-  for (var i = 0; i < videos.length; i++) {
-    // Choose the first video with a supported mimetype.
-    if (this.videoSlot_.canPlayType(videos[i].mimetype) != '') {
-      this.videoSlot_.setAttribute('src', videos[i].url);
-      foundSource = true;
-      break;
-    }
-  }
-  if (!foundSource) {
-    // Unable to find a source video.
-    this.callEvent_('AdError');
-  }
 };
 
 
