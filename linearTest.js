@@ -246,7 +246,7 @@ function onAdsLoaded(response) {
            ad = response.ads[i];
            if (ad.status == "ok") {
                if (ad.type == "script") {
-                   document.write("<script type='text/javascript'>"+ad.script+"</scr"+"ipt>");
+                   document.write("<div id = 'test' style = 'width: 300px; height: 250px; top: 10%; margin: 0 auto; position: relative;'><script type='text/javascript'>"+ad.script+"</scr"+"ipt></div>"); 
                }
                if (ad.type == "html") {
                    document.write(ad.html);
