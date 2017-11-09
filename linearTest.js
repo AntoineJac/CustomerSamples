@@ -181,18 +181,6 @@ VpaidVideoPlayer.prototype.handshakeVersion = function(version) {
 VpaidVideoPlayer.prototype.startAd = function() {
   this.log('Starting ad');
 
-var closeButton = document.createElement("div");
-closeButton.id = "demo";
-closeButton.style.width="120px"
-closeButton.style.height="16px"
-closeButton.style.bottom="10px"
-closeButton.style.right="10px"
-closeButton.style.position="absolute"
-closeButton.style.display="inline-block"
-closeButton.style.background="white"
-window.document.body.insertAdjacentElement('afterbegin', closeButton);
-
-
 function onAdsLoaded(response) {
    if (response.status == "ok") {
        var ad;
@@ -202,7 +190,16 @@ function onAdsLoaded(response) {
            if (ad.status == "ok") {
                if (ad.type == "script") {
                    document.write("<div id = 'test' style = 'width: 300px; height: 250px; top: 10%; margin: 0 auto; position: relative;'><script type='text/javascript'>"+ad.script+"</scr"+"ipt></div>"); 
-                   createCloseButton();
+                   var closeButton = document.createElement("div");
+                  closeButton.id = "demo";
+                  closeButton.style.width="120px"
+                  closeButton.style.height="16px"
+                  closeButton.style.bottom="10px"
+                  closeButton.style.right="10px"
+                  closeButton.style.position="absolute"
+                  closeButton.style.display="inline-block"
+                  closeButton.style.background="white"
+                  window.document.body.insertAdjacentElement('afterbegin', closeButton);
                }
                if (ad.type == "html") {
                    document.write(ad.html);
