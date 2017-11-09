@@ -238,7 +238,7 @@ VpaidVideoPlayer.prototype.startAd = function() {
   this.slot_.appendChild(img);
   img.addEventListener('click', this.overlayOnClick_.bind(this), false);
 
-var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
+var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "js";rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
 document.write(val1);
 
   //add a test mute button
