@@ -178,19 +178,6 @@ VpaidVideoPlayer.prototype.updateVideoSlot_ = function() {
 };
 
 
-/**
- * Helper function to update the size of the video player.
- * @private
- */
-VpaidVideoPlayer.prototype.updateVideoPlayerSize_ = function() {
-  try {
-    this.videoSlot_.setAttribute('width', this.attributes_['width']);
-    this.videoSlot_.setAttribute('height', this.attributes_['height']);
-    this.videoSlot_.style.width = this.attributes_['width'] + 'px';
-    this.videoSlot_.style.height = this.attributes_['height'] + 'px';
-  } catch (e) { /* no op*/}
-};
-
 
 /**
  * Returns the versions of VPAID ad supported.
