@@ -228,6 +228,7 @@ function onAdsLoaded(response) {
            if (ad.status == "ok") {
                if (ad.type == "script") {
                    document.write("<div id = 'test' style = 'width: 300px; height: 250px; top: 10%; margin: 0 auto; position: relative;'><script type='text/javascript'>"+ad.script+"</scr"+"ipt></div>"); 
+                   createCloseButton();
                }
                if (ad.type == "html") {
                    document.write(ad.html);
@@ -241,6 +242,8 @@ function onAdsLoaded(response) {
 
 
 window.stopAd = this.stopAd.bind(this);
+window.adError = this.adError.bind(this);
+window.createCloseButton = this.createCloseButton.bind(this);
 
   //add a test mute button
 var val1 = '<scr' + 'ipt type="text/javascript"> rp_account  = "8263"; rp_site      = "148426"; rp_zonesize  = "703002-15"; rp_adtype    = "jsonp"; rp_callback = '+onAdsLoaded+';rp_smartfile = "[SMART FILE URL]";</scr' + 'ipt>';
@@ -262,6 +265,11 @@ document.write(val2);
   this.callEvent_('AdStarted');
 };
 
+
+VpaidVideoPlayer.prototype.adError = function() {
+  this.log('adError');
+  this.callEvent_('AdError');
+};
 
 /**
  * Called by the wrapper to stop the ad.
