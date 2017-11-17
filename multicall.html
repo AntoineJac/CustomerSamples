@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<div id="demo">
+<h2>The XMLHttpRequest Object</h2>
+<button type="button" onclick="loadDoc()">start script</button>
+</div>
+
+<script>
+var n = 0;
+var rand;
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+    if (this.responseText.indexOf("deal") != -1){
+      document.getElementById("demo").innerHTML +=
+      this.responseText;}
+      else if (n < 20){
+      rand = Math.floor(Math.random() * 10000);
+        xhttp.open("GET", "https://fastlane.rubiconproject.com/a/api/fastlane.json?account_id=8532&site_id=107738&zone_id=709284&size_id=10&p_pos=btf&rp_floor=0.01&rp_secure=1&tk_flint=pbjs_lite_v0.28.0&p_screen_res=1280x800&rand="+rand+"&rf=http://www.gentside.com/", true);
+      xhttp.send();
+      n++;
+      }
+      else {alert("test");}
+    }
+  };
+  
+   rand = Math.floor(Math.random() * 10000);
+  xhttp.open("GET", "https://fastlane.rubiconproject.com/a/api/fastlane.json?account_id=8532&site_id=107738&zone_id=709284&size_id=10&p_pos=btf&rp_floor=0.01&rp_secure=1&tk_flint=pbjs_lite_v0.28.0&p_screen_res=1280x800&rand="+rand+"&rf=http://www.gentside.com/", true);
+  xhttp.send();
+}
+</script>
+
+</body>
+</html>
