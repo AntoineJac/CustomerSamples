@@ -284,6 +284,4 @@ const interScroller = function () {
     };
 };
 
-module.exports = new interScroller();
-
-window.interscroller = require('../src/rubiscroller');
+window.interscroller = new interScroller();
