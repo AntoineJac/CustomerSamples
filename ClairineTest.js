@@ -22,11 +22,11 @@ const interScroller = function () {
      * @param {object} ad response
      * @summary processes the ad response and calls interscroller functions
      */
-    self.renderAd = (bid, pVisibility) => {
+    self.renderAd = (data) => {
         // Assign the correct document context
         _document = getCorrectDocument();
 
-        init(bid.fullBids, bid.targetId, pVisibility);
+        init(data.fullBids, data.elementMarker, data.pVisibility);
     };
 
     /**
@@ -39,7 +39,7 @@ const interScroller = function () {
      */
     const init = (fullBids, rp_elementMarker, pVisibility) => {
     adDimensions = fullBids.size;
-        if (typeof targetId !== 'undefined') {
+        if (typeof rp_elementMarker !== 'undefined') {
             appendStyleSheet(adDimensions);
             
             const containerIframe = getContainerIframe(
