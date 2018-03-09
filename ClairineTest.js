@@ -26,7 +26,7 @@ const interScroller = function () {
         // Assign the correct document context
         _document = getCorrectDocument();
 
-        init(bid.fullBids, _document, bid.targetId, pVisibility);
+        init(bid.fullBids, bid.targetId, pVisibility);
     };
 
     /**
