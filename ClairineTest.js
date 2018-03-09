@@ -1,5 +1,5 @@
 /* 
-global
+test global
 
 rp_adband
 rp_elementMarker
@@ -14,19 +14,22 @@ const interScroller = function () {
     const self = this;
     let _document;
     let parentWindow;
+    let rp_adband;
     const containerID = 'rp-interscroller-container';
     const creativeID = 'rp-interscroller-creative';
     
+
     /**
      * @function interscroller#render
      * @param {object} ad response
      * @summary processes the ad response and calls interscroller functions
      */
     self.renderAd = (data) => {
+        rp_elementMarker = data.elementMarker;
         // Assign the correct document context
         _document = getCorrectDocument();
 
-        init(data.fullBids, data.elementMarker, data.pVisibility);
+        init(data.fullBids, data.elementMarker, data.pVisibility, data.iniTranslate);
     };
 
     /**
@@ -37,17 +40,24 @@ const interScroller = function () {
      * @summary adds the interscroller stylesheet, 
      * creates an iframe and adds the interscoller animation
      */
-    const init = (fullBids, rp_elementMarker, pVisibility) => {
+    const init = (fullBids, rp_elementMarker, pVisibility, iniTranslate) => {
     adDimensions = fullBids.size;
-        if (typeof rp_elementMarker !== 'undefined') {
-            appendStyleSheet(adDimensions);
+
+        document.querySelector('iframe[name^=google_ads_iframe]').style.display = "none";
+
+        if (typeof iniTranslate == 'undefined') {
+            iniTranslate = -35;
+        }
+
+        if (typeof rp_elementMarker != 'undefined') {
+            appendStyleSheet(adDimensions, pVisibility);
             
             const containerIframe = getContainerIframe(
                 adDimensions, rp_elementMarker
             );
             
             addCreative(containerIframe, fullBids.ad);
-            parallax();
+            parallax(iniTranslate);
 
         } else {
             console.error('RP: No element marker defined');
@@ -61,7 +71,7 @@ const interScroller = function () {
      * If rp_adband variable is present in the smart tag, 
      * additional ad band styles are added
      */
-    const appendStyleSheet = (adDimensions) => {
+    const appendStyleSheet = (adDimensions, pVisibility) => {
 
         const customStyleSheet = _document.createElement('style');
         customStyleSheet.id = 'rp-interscroller-styles';
@@ -83,7 +93,7 @@ const interScroller = function () {
         const interScrollerStyles = `#${containerID}{
             position:relative;
             width:${x}px;
-            height:${parseInt(y) / (100 / pVisibility)}px;
+            height:${parseInt(y) / (100 / pVisibility) }px;
             margin:0px;
             overflow:hidden;
             padding-top:20px;
@@ -175,7 +185,7 @@ const interScroller = function () {
      * @summary adds the parallax animation to move the ad up 
      * or down as the user scrolls the page
      */
-    const parallax = () => {
+    const parallax = (iniTranslate) => {
         let adUnitIsCompletelyVisible; 
         let maxSpaceLeft;
         const useTransform = true;
@@ -185,9 +195,8 @@ const interScroller = function () {
             document.querySelector(`#${containerID}`);
 
         const adUnitImage = document.querySelector(`#${creativeID}`);
-
         if (useTransform) {
-            adUnitImage.style.transform = 'translateY(-50%)';
+            adUnitImage.style.transform = 'translateY('+iniTranslate+'%)';
         }
 
         try {
