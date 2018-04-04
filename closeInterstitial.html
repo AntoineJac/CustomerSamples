@@ -1,0 +1,66 @@
+<body>
+<script>
+function onAdsLoaded(response) {
+   if (response.status == "ok") {
+       var ad;
+       var html;
+       for (var i = 0; i < response.ads.length; i++) {
+           ad = response.ads[i];
+           if (ad.status == "ok" ) {
+               if (ad.type == "script") {
+               
+               theKid = '<div id="mOverLay-container" style="position: fixed;  top: 0px;  left: 0px; width: 100%;  height: 100%;  z-index: 2147483647;"></div>';
+                document.getElementsByTagName("BODY")[0].innerHTML += theKid;
+                
+                var html = '';
+		html += '<div style="height: 100%;">';
+		html += '<div id="apps-ad">';
+		html += '<div id="banner-ad">';
+		html += '<div id="banner-close"></div>';
+		html += '<div id="banner-wrapper" style="width: 100%; height: 100%; position: absolute; background-color: rgba(0, 0, 0, 0.7)">';
+		html += '<table width="100%" height="100%"><tr valign="center"><td align="center">';
+		html += '<div id="banner-close-monkey" style="width: 40px; position: absolute; right: 5px; top:5px; cursor:pointer" align="right" style="z-index: 2147483647"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFz_6cmSl7TexEwfLnB7kThYYetMJmT1VnaGm3QUoFmE69CiOH" width="40"></div></br>';
+		html += '<iframe id="myIframeId" frameborder="0" scrolling="no">';
+        html += '</iframe>';
+		html += '</td></tr></table>';
+		html += '</div>';
+		html += '</div>';
+		html += '</div>';
+		html += '</div>';
+        
+
+
+        document.getElementById("mOverLay-container").innerHTML += html;
+        var s = document.createElement("script");
+        var inlineScript = document.createTextNode(ad.script);
+        s.appendChild(inlineScript);
+        var myIframe = document.getElementById("myIframeId"); 
+        myIframe.contentWindow.document.body.appendChild(s);
+
+       document.getElementById("banner-close-monkey").onclick =  function() {
+			document.getElementById("mOverLay-container").remove();
+		};          
+               }
+           } else {
+                console.log(ad.cpm);
+                //document.write("<div>status="+ad.status+"</div>");
+           }
+       }
+   }
+}
+</script>
+
+<!--  Begin Rubicon Project Tag -->
+<!--  Site: Antoine-test   Zone: testZoneAntoine   Size: Medium Rectangle  -->
+<script language="JavaScript" type="text/javascript">
+rp_account   = '8263';
+rp_site      = '148426';
+rp_zonesize  = '703002-2';
+rp_adtype    = 'jsonp';
+rp_callback = onAdsLoaded;
+rp_smartfile = '[SMART FILE URL]';
+</script>
+<script type="text/javascript" src="https://ads.rubiconproject.com/ad/8263.js"></script>
+<!--  End Rubicon Project Tag -->
+</body>
+
