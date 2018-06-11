@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<script type="text/javascript">
+			
+
+			test = function(e) {
+				console.log(e.origin);
+				console.log(e.data.message)
+				if (e.data.message !== "render"){
+				console.log("test");
+    			return;
+    			}
+				console.log("test2");
+				console.log(e.data.html);
+				document.write(e.data.html);
+			}
+
+			window.addEventListener('message', test, false);
+		</script>
+	</head>
+	<body></body>
+</html>
