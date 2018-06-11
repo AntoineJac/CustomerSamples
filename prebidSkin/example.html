@@ -1,0 +1,146 @@
+
+<script type="text/javascript">
+(function() {
+    var useSSL = 'https:' == document.location.protocol,
+        src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
+    document.write('<scr' + 'ipt src="' + src + '"></scr' + 'ipt>');
+})();
+</script>
+
+    <script type="text/javascript">
+      //This part could be removed if gutuApp already defined in the pafe
+        var guruApp = guruApp || {};
+        guruApp.googleTagPush = guruApp.googleTagPush || [];
+        
+        guruApp.googleTagPush = function(f){
+        try {googletag.cmd.push(f);} catch (e){}
+
+        };</script>
+
+<!-- // Should be replace by your prebid tag-->
+<script type="text/javascript" src="//acdn.adnxs.com/prebid/not-for-prod/prebid.js" async></script>
+        
+<script type="text/javascript">
+    
+// In production the Ids should be replace by the one from your account.    
+var adUnits = [
+         {
+           code: '/4362169/Ad_test',
+           sizes: [[300,250]],
+           renderer: {
+                url: 'https://cdn.rawgit.com/AntoineJac/CustomerSamples/master/HbSkin.js',
+                render: function(prebidBid) {
+                    skinOverlay.renderAd({
+                        elementMarker: "#google_dfp_ads_slot_desktop_showcase_1_2",
+                        insertionMarker: "body",
+                        expanderMarker: "body",
+                        fullBids: prebidBid,
+                        header_height: "250",
+                        contentWidth: "1800",
+                        bgColor: "#1F2F3F",
+                        custom_style_iframe: "background-color: transparent; display:block; img{width:100%}",
+                        custom_style_page: "#wrapper{width: 800px !important; margin: auto; float:none; position:relative; z-index:2000}body{overflow-x: hidden !important;}",
+                        iframe_url: "https://legba.alwaysdata.net/testIframe.html",
+                        click_url:"https://testAntoine.fr"
+                    });
+                }   
+            },
+             bids: [{
+                         bidder: 'rubicon',params:{
+                         accountId: "14062",
+                         siteId: "70608",
+                         zoneId: "335918",
+                      }
+                    }]
+         }];
+
+</script>
+
+<script>
+           // Load GPT when timeout is reached.
+        var PREBID_TIMEOUT = 2000;
+        setTimeout(sendAdserverRequest, PREBID_TIMEOUT);
+
+        var pbjs = pbjs || {};
+        pbjs.que = pbjs.que || [];
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+
+        googletag.cmd.push(function() {
+        googletag.pubads().disableInitialLoad();
+        });
+
+            function sendAdserverRequest() {
+                if (pbjs.adserverRequestSent) return;
+                pbjs.adserverRequestSent = true;
+                googletag.cmd.push(function() {
+                    pbjs.que.push(function() {
+                        pbjs.setTargetingForGPTAsync();
+                        googletag.pubads().refresh();
+                    });
+                });
+            }  
+
+// Add the below code snippet to your page if you are using Google Analytics and would like to report stats
+/*
+pbjs.que.push(function() {
+    pbjs.enableAnalytics({
+        provider: 'ga',
+        options: {
+            global: 'ga', // <string> name of GA global. Default is 'ga'
+            enableDistribution: false,
+        }
+    });
+});
+*/
+
+    pbjs.que.push(function(){
+
+        pbjs.setBidderSequence('random');
+        pbjs.enableSendAllBids();
+
+            //add the adUnits
+            pbjs.addAdUnits(adUnits);      
+
+            pbjs.requestBids({
+                bidsBackHandler: sendAdserverRequest
+            });
+        });
+</script>
+
+
+<script type='text/javascript'>
+if (typeof googletag !== 'undefined') {
+    var mapping;
+      
+
+        googletag.defineSlot('/4362169/Ad_test', [300,250], 'google_dfp_ads_slot_desktop_showcase_1_2').addService(googletag.pubads());
+
+   
+    googletag.pubads().enableSingleRequest();
+
+
+   // Prebid is only working with async
+   // googletag.pubads().enableSyncRendering();
+
+    googletag.pubads().collapseEmptyDivs();
+    googletag.enableServices();
+
+}
+</script>
+<div id='wrapper'>
+jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>
+jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>
+
+<div id="google_dfp_ads_slot_desktop_showcase_1_2" class="ads-dfp loading">
+    <script type='text/javascript'>
+        guruApp.googleTagPush(function() { googletag.display('google_dfp_ads_slot_desktop_showcase_1_2'); });
+    </script>
+</div>
+jdasnh<br>jdaskndajkn<br>
+<div id="interscroller">
+jkn
+</div>
+jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>
+jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>jdasnh<br>jdaskndajkn<br>
+</div>
