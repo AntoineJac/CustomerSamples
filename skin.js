@@ -13,7 +13,7 @@ var adUnitsSkin = [
 
 var scriptAntoine = document.createElement('script');
 scriptAntoine.type = 'text/javascript';
-scriptAntoine.src = 'https://acdn.adnxs.com/prebid/not-for-prod/prebid.js';
+scriptAntoine.src = 'https://acdn.adnxs.com/prebid/not-for-prod/1/prebid.js';
 document.head.appendChild(scriptAntoine);
 
 var scriptAntoine2 = document.createElement('script');
