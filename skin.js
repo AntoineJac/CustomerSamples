@@ -34,8 +34,11 @@ googletag.cmd = googletag.cmd || [];
 pbjs.adserverRequestSent = false
 
 googletag.cmd.push(function() {
-googletag.defineSlot('/4362169/Ad_test', [300,250], 'testAntoine').addService(googletag.pubads());
-googletag.pubads().disableInitialLoad();
+         googletag.pubads().disableInitialLoad();
+         googletag.defineSlot('/4362169/Ad_test', [300,250], 'testAntoine').addService(googletag.pubads());
+         googletag.pubads().enableSingleRequest();
+         googletag.pubads().collapseEmptyDivs();
+         googletag.enableServices();
 });
 
 function sendAdserverRequest() {
