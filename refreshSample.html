@@ -111,14 +111,14 @@ Result
                             bidsBackHandler: function() {
                                 //pbjs.setTargetingForGPTAsync(['/19968336/header-bid-tag-0']);
                                 pbjs.setTargetingForGPTAsync();
-                                setTimeout(DFP_call, 3000);
+                                setTimeout(DFP_call, PREBID_TIMEOUT_REFRESH);
                                 
             }
         });
     });
 }
 
-var IntervalRefresh = setInterval(refreshBid, 13000);
+var IntervalRefresh = setInterval(refreshBid, 48000);
         </script>
 
     </head>
