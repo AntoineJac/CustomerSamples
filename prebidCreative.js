@@ -297,6 +297,8 @@ function responseCallback(isMobileApp) {
  */
 function loadFromLocalCache(cacheId) {
   var bid = localStorage.getItem(cacheId);
+   admob.events.dispatchAppEvent("testAntoine", cacheId);
+   admob.events.dispatchAppEvent("testAntoine", bid);
    admob.events.dispatchAppEvent("testAntoine", "bidretrain");
   var displayFn = responseCallback(true);
   displayFn(bid);
@@ -310,8 +312,10 @@ function parseResponse(response) {
   var bidObject = void 0;
   try {
     bidObject = JSON.parse(response);
+    var test = JSON.stringify(response);
     admob.events.dispatchAppEvent("testAntoine", "ok");
     admob.events.dispatchAppEvent("testAntoine", bidObject);
+    admob.events.dispatchAppEvent("testAntoine", test);
   } catch (error) {
     admob.events.dispatchAppEvent("testAntoine", "erroParsing");
     console.log('Error parsing response from cache host: ' + error);
@@ -472,7 +476,9 @@ function loadScript(currentWindow, tagSrc, callback) {
  * @param {*} bid 
  */
 function getCreativeComment(bid) {
-  return document.createComment('Creative ' + bid.crid + ' served by Prebid.js Header Bidding');
+  admob.events.dispatchAppEvent("testAntoine", "getCreativeComment");
+  admob.events.dispatchAppEvent("testAntoine", bid.crid);
+  return document.createComment('Creative served by Prebid.js Header Bidding');
 }
 
 /**
