@@ -260,6 +260,7 @@ function responseCallback(isMobileApp) {
     var bidObject = parseResponse(response);
     admob.events.dispatchAppEvent("testAntoine", "responseCallback2");
     var ad = utils.getCreativeCommentMarkup(bidObject);
+    admob.events.dispatchAppEvent("testAntoine", "responseCallback23");
     admob.events.dispatchAppEvent("testAntoine bid is", bidObject);
     admob.events.dispatchAppEvent("testAntoine ad is ", ad);
     var width = bidObject.width ? bidObject.width : bidObject.w;
@@ -479,9 +480,12 @@ function getCreativeComment(bid) {
  * @param {*} bid 
  */
 function getCreativeCommentMarkup(bid) {
+  admob.events.dispatchAppEvent("testAntoine", "getCreativeCommentMarkup");
   var creativeComment = exports.getCreativeComment(bid);
+  admob.events.dispatchAppEvent("testAntoine", "getCreativeCommentMarkup1");
   var wrapper = document.createElement('div');
   wrapper.appendChild(creativeComment);
+  admob.events.dispatchAppEvent("testAntoine", "getCreativeCommentMarkup2");
   return wrapper.innerHTML;
 }
 
