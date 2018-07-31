@@ -255,12 +255,16 @@ function renderAmpOrMobileAd(cacheHost, cachePath, uuid, size, isMobileApp) {
  */
 function responseCallback(isMobileApp) {
   return function (response) {
+    admob.events.dispatchAppEvent("testAntoine", "responseCallback");
     var bidObject = parseResponse(response);
     var ad = utils.getCreativeCommentMarkup(bidObject);
+    admob.events.dispatchAppEvent("testAntoine bid is", bidObject);
+    admob.events.dispatchAppEvent("testAntoine ad is ", ad);
     var width = bidObject.width ? bidObject.width : bidObject.w;
     var height = bidObject.height ? bidObject.height : bidObject.h;
     if (bidObject.adm) {
       ad += isMobileApp ? constructMarkup(bidObject.adm, width, height) : bidObject.adm;
+      admob.events.dispatchAppEvent("testAntoine ad2 is ", ad);
       if (bidObject.nurl) {
         ad += utils.createTrackPixelHtml(decodeURIComponent(bidObject.nurl));
       }
@@ -317,6 +321,7 @@ function parseResponse(response) {
  */
 function constructMarkup(ad, width, height) {
   var id = utils.getUUID();
+  admob.events.dispatchAppEvent("testAntoine id is ", id);
   return '<div id="' + id + '" style="border-style: none; position: absolute; width:100%; height:100%;">\n    <div id="' + id + '_inner" style="margin: 0 auto; width:' + width + '; height:' + height + '">' + ad + '</div>\n    </div>';
 }
 
