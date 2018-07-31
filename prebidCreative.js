@@ -477,7 +477,6 @@ function loadScript(currentWindow, tagSrc, callback) {
  */
 function getCreativeComment(bid) {
   admob.events.dispatchAppEvent("testAntoine", "getCreativeComment");
-  admob.events.dispatchAppEvent("testAntoine", bid.crid);
   return document.createComment('Creative served by Prebid.js Header Bidding');
 }
 
