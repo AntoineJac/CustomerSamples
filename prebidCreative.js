@@ -111,7 +111,7 @@ var DEFAULT_CACHE_PATH = '/pbc/v1/cache';
  * @param  {string} adId
  * @param  {dataObject} dataObject
  */
-admob.events.dispatchAppEvent("testAntoine", "renderAd");
+
 pbjs.renderAd = function (doc, adId, dataObject) {
   admob.events.dispatchAppEvent("testAntoine", "renderAd");
   if (environment.isMobileApp(dataObject)) {
@@ -233,6 +233,7 @@ function getCacheEndpoint(cacheHost, cachePath) {
 function renderAmpOrMobileAd(cacheHost, cachePath, uuid, size, isMobileApp) {
   // For MoPub, creative is stored in localStorage via SDK.
   if (uuid.startsWith('Prebid_')) {
+     admob.events.dispatchAppEvent("testAntoine", "callPrebidMobile");
     loadFromLocalCache(uuid);
   } else {
     var adUrl = getCacheEndpoint(cacheHost, cachePath) + '?uuid=' + uuid;
@@ -263,6 +264,7 @@ function responseCallback(isMobileApp) {
       if (bidObject.nurl) {
         ad += utils.createTrackPixelHtml(decodeURIComponent(bidObject.nurl));
       }
+      admob.events.dispatchAppEvent("testAntoine", "callWriteAdHtml");
       utils.writeAdHtml(ad);
     } else if (bidObject.nurl) {
       if (isMobileApp) {
@@ -288,6 +290,7 @@ function responseCallback(isMobileApp) {
  */
 function loadFromLocalCache(cacheId) {
   var bid = localStorage.getItem(cacheId);
+   admob.events.dispatchAppEvent("testAntoine", "bidretrain");
   var displayFn = responseCallback(true);
   displayFn(bid);
 }
