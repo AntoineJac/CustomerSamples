@@ -255,8 +255,10 @@ function renderAmpOrMobileAd(cacheHost, cachePath, uuid, size, isMobileApp) {
  */
 function responseCallback(isMobileApp) {
   return function (response) {
+    admob.events.dispatchAppEvent("testAntoine ad is ", response);
     admob.events.dispatchAppEvent("testAntoine", "responseCallback");
     var bidObject = parseResponse(response);
+    admob.events.dispatchAppEvent("testAntoine", "responseCallback2");
     var ad = utils.getCreativeCommentMarkup(bidObject);
     admob.events.dispatchAppEvent("testAntoine bid is", bidObject);
     admob.events.dispatchAppEvent("testAntoine ad is ", ad);
@@ -307,7 +309,10 @@ function parseResponse(response) {
   var bidObject = void 0;
   try {
     bidObject = JSON.parse(response);
+    admob.events.dispatchAppEvent("testAntoine", "ok");
+    admob.events.dispatchAppEvent("testAntoine", bidObject);
   } catch (error) {
+    admob.events.dispatchAppEvent("testAntoine", "erroParsing");
     console.log('Error parsing response from cache host: ' + error);
   }
   return bidObject;
