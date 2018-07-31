@@ -1,3 +1,2699 @@
-/* prebid-universal-creative v0.4.0
-Updated : 2018-07-10 */
-!function(r){var n={};function o(t){if(n[t])return n[t].exports;var e=n[t]={i:t,l:!1,exports:{}};return r[t].call(e.exports,e,e.exports,o),e.l=!0,e.exports}o.m=r,o.c=n,o.d=function(t,e,r){o.o(t,e)||Object.defineProperty(t,e,{configurable:!1,enumerable:!0,get:r})},o.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return o.d(e,"a",e),e},o.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},o.p="",o(o.s=0)}([function(t,e,r){"use strict";var d=n(r(1)),p=n(r(3));function n(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}var o=window.pbjs=window.pbjs||{},i="//tpc.googlesyndication.com",f="prebid.adnxs.com",h="/pbc/v1/cache";function a(t,e,r,n,o){if(r.startsWith("Prebid_"))c=r,l=localStorage.getItem(c),m(!0)(l);else{var i="https://"+(void 0===(s=t)||""===s?f:s)+(void 0===(u=e)||""===u?h:u)+"?uuid="+r;if(void 0!==n&&""!==n){var a=n.split("x").map(Number);!function(n,o){if(p.isSafeFrame()){var i=window.innerWidth,a=window.innerHeight;i===n&&a===o||($sf.ext.register(n,o,function(t){var e=n-i,r=o-a;$sf.ext.expand({r:e,b:r,push:!0})}),window.parent.postMessage({sentinel:"amp",type:"embed-size",width:n,height:o},"*"))}}(a[0],a[1])}else console.log("Targeting key hb_size not found to resize creative");d.sendRequest(i,m(o))}var s,u,c,l}function m(s){return function(t){var e=function(t){var e=void 0;try{e=JSON.parse(t)}catch(t){console.log("Error parsing response from cache host: "+t)}return e}(t),r=d.getCreativeCommentMarkup(e),n=e.width?e.width:e.w,o=e.height?e.height:e.h;if(e.adm)r+=s?u(e.adm,n,o):e.adm,e.nurl&&(r+=d.createTrackPixelHtml(decodeURIComponent(e.nurl))),d.writeAdHtml(r);else if(e.nurl)if(s){r+=u(d.loadScript(window,e.nurl).outerHTML,n,o),d.writeAdHtml(r)}else{var i=e.nurl,a=d.getCreativeComment(e);d.insertElement(a,document,"body"),d.writeAdUrl(i,n,o)}e.burl&&d.triggerBurl(e.burl)}}function u(t,e,r){var n=d.getUUID();return'<div id="'+n+'" style="border-style: none; position: absolute; width:100%; height:100%;">\n    <div id="'+n+'_inner" style="margin: 0 auto; width:'+e+"; height:"+r+'">'+t+"</div>\n    </div>"}o.renderAd=function(t,e,r){p.isMobileApp(r)?a(r.cacheHost,r.cachePath,r.uuid,r.size,!0):p.isAmp(r)?a(r.cacheHost,r.cachePath,r.uuid,r.size):p.isCrossDomain()?function(p,t){var e=document.createElement("a");e.href=t;var f=e.protocol+"//"+e.host,r=e.protocol+i;function n(t){var e=t.message?"message":"data",r={};try{r=JSON.parse(t[e])}catch(t){return}var n=t.origin||t.originalEvent.origin;if(r.message&&"Prebid Response"===r.message&&f===n&&r.adId===p&&(r.ad||r.adUrl)){var o=window.document.body,i=r.ad,a=r.adUrl,s=r.width,u=r.height;if("video"===r.mediaType)console.log("Error trying to write ad.");else if(i){var c=d.getEmptyIframe(r.height,r.width);o.appendChild(c),c.contentDocument.open(),c.contentDocument.write(i),c.contentDocument.close()}else if(a){var l=d.getEmptyIframe(u,s);l.style.display="inline",l.style.overflow="hidden",l.src=a,d.insertElement(l,doc,"body")}else console.log("Error trying to write ad. No ad for bid response id: "+id)}}window.addEventListener("message",n,!1),o=JSON.stringify({message:"Prebid Request",adId:p,adServerDomain:r}),window.parent.postMessage(o,f);var o}(e,r.pubUrl):function(t,e){for(var r=window,n=0;n<10;n++)if((r=r.parent).pbjs)try{r.pbjs.renderAd(document,e);break}catch(t){continue}}(0,e)}},function(t,n,e){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),n.createTrackPixelHtml=function(t){if(!t)return"";return'<div style="position:absolute;left:0px;top:0px;visibility:hidden;"><img src="'+encodeURI(t)+'"></div>'},n.writeAdUrl=function(t,e,r){var n=o(r,e);n.src=t,document.body.appendChild(n)},n.writeAdHtml=function(t){r(document.body,t)},n.sendRequest=function(t,e){var r=new XMLHttpRequest;r.addEventListener("load",function(){e(r.responseText)}),r.open("GET",t),r.send()},n.getEmptyIframe=o,n.getUUID=function(){var r=(new Date).getTime();return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(t){var e=(r+16*Math.random())%16|0;return r=Math.floor(r/16),("x"===t?e:3&e|8).toString(16)})},n.loadScript=function(t,e,r){var n=t.document,o=n.createElement("script");o.type="text/javascript",r&&"function"==typeof r&&(o.readyState?o.onreadystatechange=function(){"loaded"!==o.readyState&&"complete"!==o.readyState||(o.onreadystatechange=null,r())}:o.onload=function(){r()});o.src=e;var i=n.getElementsByTagName("head");(i=i.length?i:n.getElementsByTagName("body")).length&&(i=i[0]).insertBefore(o,i.firstChild);return o},n.getCreativeComment=function(t){return document.createComment("Creative "+t.crid+" served by Prebid.js Header Bidding")},n.getCreativeCommentMarkup=function(t){var e=n.getCreativeComment(t),r=document.createElement("div");return r.appendChild(e),r.innerHTML},n.insertElement=function(t,e,r){e=e||document;var n=void 0;n=r?e.getElementsByTagName(r):e.getElementsByTagName("head");try{(n=n.length?n:e.getElementsByTagName("body")).length&&(n=n[0]).insertBefore(t,n.firstChild)}catch(t){}},n.triggerBurl=function(t){(new Image).src=t};var r=e(2);function o(t,e){var r=document.createElement("iframe");return r.setAttribute("frameborder",0),r.setAttribute("scrolling","no"),r.setAttribute("marginheight",0),r.setAttribute("marginwidth",0),r.setAttribute("TOPMARGIN",0),r.setAttribute("LEFTMARGIN",0),r.setAttribute("allowtransparency","true"),r.setAttribute("width",e),r.setAttribute("height",t),r}},function(t,e,r){var n;n=function(){return function(r){var n={};function o(t){if(n[t])return n[t].exports;var e=n[t]={exports:{},id:t,loaded:!1};return r[t].call(e.exports,e,e.exports,o),e.loaded=!0,e.exports}return o.m=r,o.c=n,o.p="",o(0)}([function(t,e,r){"use strict";var n,o=r(1),i=(n=o)&&n.__esModule?n:{default:n};t.exports=i.default},function(t,e,r){"use strict";e.__esModule=!0;var s=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var r=arguments[e];for(var n in r)Object.prototype.hasOwnProperty.call(r,n)&&(t[n]=r[n])}return t};e.default=h;var n,o=r(2),u=(n=o)&&n.__esModule?n:{default:n},i=function(t){{if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}}(r(4));function c(){}var a={afterAsync:c,afterDequeue:c,afterStreamStart:c,afterWrite:c,autoFix:!0,beforeEnqueue:c,beforeWriteToken:function(t){return t},beforeWrite:function(t){return t},done:c,error:function(t){throw new Error(t.msg)},releaseAsync:!1},l=0,p=[],f=null;function d(){var t=p.shift();if(t){var e=i.last(t);e.afterDequeue(),t.stream=function(t,e,n){(f=new u.default(t,n)).id=l++,f.name=n.name||f.id,h.streams[f.name]=f;var r=t.ownerDocument,o={close:r.close,open:r.open,write:r.write,writeln:r.writeln};function i(t){t=n.beforeWrite(t),f.write(t),n.afterWrite(t)}s(r,{close:c,open:c,write:function(){for(var t=arguments.length,e=Array(t),r=0;r<t;r++)e[r]=arguments[r];return i(e.join(""))},writeln:function(){for(var t=arguments.length,e=Array(t),r=0;r<t;r++)e[r]=arguments[r];return i(e.join("")+"\n")}});var a=f.win.onerror||c;return f.win.onerror=function(t,e,r){n.error({msg:t+" - "+e+": "+r}),a.apply(f.win,[t,e,r])},f.write(e,function(){s(r,o),f.win.onerror=a,n.done(),f=null,d()}),f}.apply(void 0,t),e.afterStreamStart()}}function h(t,e,r){if(i.isFunction(r))r={done:r};else if("clear"===r)return p=[],f=null,void(l=0);r=i.defaults(r,a);var n=[t=/^#/.test(t)?window.document.getElementById(t.substr(1)):t.jquery?t[0]:t,e,r];return t.postscribe={cancel:function(){n.stream?n.stream.abort():n[1]=c}},r.beforeEnqueue(n),p.push(n),f||d(),t.postscribe}s(h,{streams:{},queue:p,WriteStream:u.default})},function(t,e,r){"use strict";e.__esModule=!0;var n,s=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var r=arguments[e];for(var n in r)Object.prototype.hasOwnProperty.call(r,n)&&(t[n]=r[n])}return t},o=r(3),i=(n=o)&&n.__esModule?n:{default:n},a=function(t){{if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}}(r(4));var l="data-ps-",p="ps-style",f="ps-script";function u(t,e){var r=l+e,n=t.getAttribute(r);return a.existy(n)?String(n):n}function c(t,e){var r=2<arguments.length&&void 0!==arguments[2]?arguments[2]:null,n=l+e;a.existy(r)&&""!==r?t.setAttribute(n,r):t.removeAttribute(n)}var d=function(){function r(t){var e=1<arguments.length&&void 0!==arguments[1]?arguments[1]:{};!function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}(this,r),this.root=t,this.options=e,this.doc=t.ownerDocument,this.win=this.doc.defaultView||this.doc.parentWindow,this.parser=new i.default("",{autoFix:e.autoFix}),this.actuals=[t],this.proxyHistory="",this.proxyRoot=this.doc.createElement(t.nodeName),this.scriptStack=[],this.writeQueue=[],c(this.proxyRoot,"proxyof",0)}return r.prototype.write=function(){var t;for((t=this.writeQueue).push.apply(t,arguments);!this.deferredRemote&&this.writeQueue.length;){var e=this.writeQueue.shift();a.isFunction(e)?this._callFunction(e):this._writeImpl(e)}},r.prototype._callFunction=function(t){var e={type:"function",value:t.name||t.toString()};this._onScriptStart(e),t.call(this.win,this.doc),this._onScriptDone(e)},r.prototype._writeImpl=function(t){this.parser.append(t);for(var e=void 0,r=void 0,n=void 0,o=[];(e=this.parser.readToken())&&!(r=a.isScript(e))&&!(n=a.isStyle(e));)(e=this.options.beforeWriteToken(e))&&o.push(e);0<o.length&&this._writeStaticTokens(o),r&&this._handleScriptToken(e),n&&this._handleStyleToken(e)},r.prototype._writeStaticTokens=function(t){var e=this._buildChunk(t);return e.actual?(e.html=this.proxyHistory+e.actual,this.proxyHistory+=e.proxy,this.proxyRoot.innerHTML=e.html,this._walkChunk(),e):null},r.prototype._buildChunk=function(t){for(var e=this.actuals.length,r=[],n=[],o=[],i=t.length,a=0;a<i;a++){var s=t[a],u=s.toString();if(r.push(u),s.attrs){if(!/^noscript$/i.test(s.tagName)){var c=e++;n.push(u.replace(/(\/?>)/," "+l+"id="+c+" $1")),s.attrs.id!==f&&s.attrs.id!==p&&o.push("atomicTag"===s.type?"":"<"+s.tagName+" "+l+"proxyof="+c+(s.unary?" />":">"))}}else n.push(u),o.push("endTag"===s.type?u:"")}return{tokens:t,raw:r.join(""),actual:n.join(""),proxy:o.join("")}},r.prototype._walkChunk=function(){for(var t=void 0,e=[this.proxyRoot];a.existy(t=e.shift());){var r=1===t.nodeType;if(!(r&&u(t,"proxyof"))){r&&c(this.actuals[u(t,"id")]=t,"id");var n=t.parentNode&&u(t.parentNode,"proxyof");n&&this.actuals[n].appendChild(t)}e.unshift.apply(e,a.toArray(t.childNodes))}},r.prototype._handleScriptToken=function(t){var e=this,r=this.parser.clear();r&&this.writeQueue.unshift(r),t.src=t.attrs.src||t.attrs.SRC,(t=this.options.beforeWriteToken(t))&&(t.src&&this.scriptStack.length?this.deferredRemote=t:this._onScriptStart(t),this._writeScriptToken(t,function(){e._onScriptDone(t)}))},r.prototype._handleStyleToken=function(t){var e=this.parser.clear();e&&this.writeQueue.unshift(e),t.type=t.attrs.type||t.attrs.TYPE||"text/css",(t=this.options.beforeWriteToken(t))&&this._writeStyleToken(t),e&&this.write()},r.prototype._writeStyleToken=function(t){var e=this._buildStyle(t);this._insertCursor(e,p),t.content&&(e.styleSheet&&!e.sheet?e.styleSheet.cssText=t.content:e.appendChild(this.doc.createTextNode(t.content)))},r.prototype._buildStyle=function(t){var r=this.doc.createElement(t.tagName);return r.setAttribute("type",t.type),a.eachKey(t.attrs,function(t,e){r.setAttribute(t,e)}),r},r.prototype._insertCursor=function(t,e){this._writeImpl('<span id="'+e+'"/>');var r=this.doc.getElementById(e);r&&r.parentNode.replaceChild(t,r)},r.prototype._onScriptStart=function(t){t.outerWrites=this.writeQueue,this.writeQueue=[],this.scriptStack.unshift(t)},r.prototype._onScriptDone=function(t){t===this.scriptStack[0]?(this.scriptStack.shift(),this.write.apply(this,t.outerWrites),!this.scriptStack.length&&this.deferredRemote&&(this._onScriptStart(this.deferredRemote),this.deferredRemote=null)):this.options.error({msg:"Bad script nesting or script finished twice"})},r.prototype._writeScriptToken=function(t,e){var r=this._buildScript(t),n=this._shouldRelease(r),o=this.options.afterAsync;t.src&&(r.src=t.src,this._scriptLoadHandler(r,n?o:function(){e(),o()}));try{this._insertCursor(r,f),r.src&&!n||e()}catch(t){this.options.error(t),e()}},r.prototype._buildScript=function(t){var r=this.doc.createElement(t.tagName);return a.eachKey(t.attrs,function(t,e){r.setAttribute(t,e)}),t.content&&(r.text=t.content),r},r.prototype._scriptLoadHandler=function(e,r){function n(){e=e.onload=e.onreadystatechange=e.onerror=null}var o=this.options.error;function t(){n(),null!=r&&r(),r=null}function i(t){n(),o(t),null!=r&&r(),r=null}function a(t,e){var r=t["on"+e];null!=r&&(t["_on"+e]=r)}a(e,"load"),a(e,"error"),s(e,{onload:function(){if(e._onload)try{e._onload.apply(this,Array.prototype.slice.call(arguments,0))}catch(t){i({msg:"onload handler failed "+t+" @ "+e.src})}t()},onerror:function(){if(e._onerror)try{e._onerror.apply(this,Array.prototype.slice.call(arguments,0))}catch(t){return void i({msg:"onerror handler failed "+t+" @ "+e.src})}i({msg:"remote script failed "+e.src})},onreadystatechange:function(){/^(loaded|complete)$/.test(e.readyState)&&t()}})},r.prototype._shouldRelease=function(t){return!/^script$/i.test(t.nodeName)||!!(this.options.releaseAsync&&t.src&&t.hasAttribute("async"))},r}();e.default=d},function(t,e,r){var n;n=function(){return function(r){var n={};function o(t){if(n[t])return n[t].exports;var e=n[t]={exports:{},id:t,loaded:!1};return r[t].call(e.exports,e,e.exports,o),e.loaded=!0,e.exports}return o.m=r,o.c=n,o.p="",o(0)}([function(t,e,r){"use strict";var n,o=r(1),i=(n=o)&&n.__esModule?n:{default:n};t.exports=i.default},function(t,e,r){"use strict";e.__esModule=!0;var n,s=c(r(2)),o=c(r(3)),i=r(6),u=(n=i)&&n.__esModule?n:{default:n},a=r(5);function c(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}var l={comment:/^<!--/,endTag:/^<\//,atomicTag:/^<\s*(script|style|noscript|iframe|textarea)[\s\/>]/i,startTag:/^</,chars:/^[^<]/},p=function(){function a(){var t=this,e=0<arguments.length&&void 0!==arguments[0]?arguments[0]:"",r=1<arguments.length&&void 0!==arguments[1]?arguments[1]:{};!function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}(this,a),this.stream=e;var n=!1,o={};for(var i in s)s.hasOwnProperty(i)&&(r.autoFix&&(o[i+"Fix"]=!0),n=n||o[i+"Fix"]);n?(this._readToken=(0,u.default)(this,o,function(){return t._readTokenImpl()}),this._peekToken=(0,u.default)(this,o,function(){return t._peekTokenImpl()})):(this._readToken=this._readTokenImpl,this._peekToken=this._peekTokenImpl)}return a.prototype.append=function(t){this.stream+=t},a.prototype.prepend=function(t){this.stream=t+this.stream},a.prototype._readTokenImpl=function(){var t=this._peekTokenImpl();if(t)return this.stream=this.stream.slice(t.length),t},a.prototype._peekTokenImpl=function(){for(var t in l)if(l.hasOwnProperty(t)&&l[t].test(this.stream)){var e=o[t](this.stream);if(e)return"startTag"===e.type&&/script|style/i.test(e.tagName)?null:(e.text=this.stream.substr(0,e.length),e)}},a.prototype.peekToken=function(){return this._peekToken()},a.prototype.readToken=function(){return this._readToken()},a.prototype.readTokens=function(t){for(var e=void 0;e=this.readToken();)if(t[e.type]&&!1===t[e.type](e))return},a.prototype.clear=function(){var t=this.stream;return this.stream="",t},a.prototype.rest=function(){return this.stream},a}();for(var f in(e.default=p).tokenToString=function(t){return t.toString()},p.escapeAttributes=function(t){var e={};for(var r in t)t.hasOwnProperty(r)&&(e[r]=(0,a.escapeQuotes)(t[r],null));return e},p.supports=s)s.hasOwnProperty(f)&&(p.browserHasFlaw=p.browserHasFlaw||!s[f]&&f)},function(t,e){"use strict";e.__esModule=!0;var r=!1,n=!1,o=window.document.createElement("div");try{var i="<P><I></P></I>";o.innerHTML=i,e.tagSoup=r=o.innerHTML!==i}catch(t){e.tagSoup=r=!1}try{o.innerHTML="<P><i><P></P></i></P>",e.selfClose=n=2===o.childNodes.length}catch(t){e.selfClose=n=!1}o=null,e.tagSoup=r,e.selfClose=n},function(t,e,r){"use strict";e.__esModule=!0;var a="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t};e.comment=function(t){var e=t.indexOf("--\x3e");if(0<=e)return new s.CommentToken(t.substr(4,e-1),e+3)},e.chars=function(t){var e=t.indexOf("<");return new s.CharsToken(0<=e?e:t.length)},e.startTag=o,e.atomicTag=function(t){var e=o(t);if(e){var r=t.slice(e.length);if(r.match(new RegExp("</\\s*"+e.tagName+"\\s*>","i"))){var n=r.match(new RegExp("([\\s\\S]*?)</\\s*"+e.tagName+"\\s*>","i"));if(n)return new s.AtomicTagToken(e.tagName,n[0].length+e.length,e.attrs,e.booleanAttrs,n[1])}}},e.endTag=function(t){var e=t.match(u.endTag);if(e)return new s.EndTagToken(e[1],e[0].length)};var s=r(4),u={startTag:/^<([\-A-Za-z0-9_]+)((?:\s+[\w\-]+(?:\s*=?\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,endTag:/^<\/([\-A-Za-z0-9_]+)[^>]*>/,attr:/(?:([\-A-Za-z0-9_]+)\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))|(?:([\-A-Za-z0-9_]+)(\s|$)+)/g,fillAttr:/^(checked|compact|declare|defer|disabled|ismap|multiple|nohref|noresize|noshade|nowrap|readonly|selected)$/i};function o(t){var r,n,o;if(-1!==t.indexOf(">")){var e=t.match(u.startTag);if(e){var i=(r={},n={},o=e[2],e[2].replace(u.attr,function(t,e){arguments[2]||arguments[3]||arguments[4]||arguments[5]?arguments[5]?(r[arguments[5]]="",n[arguments[5]]=!0):r[e]=arguments[2]||arguments[3]||arguments[4]||u.fillAttr.test(e)&&e||"":r[e]="",o=o.replace(t,"")}),{v:new s.StartTagToken(e[1],e[0].length,r,n,!!e[3],o.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,""))});if("object"===(void 0===i?"undefined":a(i)))return i.v}}}},function(t,e,r){"use strict";e.__esModule=!0,e.EndTagToken=e.AtomicTagToken=e.StartTagToken=e.TagToken=e.CharsToken=e.CommentToken=e.Token=void 0;var a=r(5);function s(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}e.Token=function t(e,r){s(this,t),this.type=e,this.length=r,this.text=""},e.CommentToken=function(){function r(t,e){s(this,r),this.type="comment",this.length=e||(t?t.length:0),this.text="",this.content=t}return r.prototype.toString=function(){return"\x3c!--"+this.content},r}(),e.CharsToken=function(){function e(t){s(this,e),this.type="chars",this.length=t,this.text=""}return e.prototype.toString=function(){return this.text},e}();var n=e.TagToken=function(){function i(t,e,r,n,o){s(this,i),this.type=t,this.length=r,this.text="",this.tagName=e,this.attrs=n,this.booleanAttrs=o,this.unary=!1,this.html5Unary=!1}return i.formatTag=function(t){var e=1<arguments.length&&void 0!==arguments[1]?arguments[1]:null,r="<"+t.tagName;for(var n in t.attrs)if(t.attrs.hasOwnProperty(n)){r+=" "+n;var o=t.attrs[n];void 0!==t.booleanAttrs&&void 0!==t.booleanAttrs[n]||(r+='="'+(0,a.escapeQuotes)(o)+'"')}return t.rest&&(r+=" "+t.rest),t.unary&&!t.html5Unary?r+="/>":r+=">",null!=e&&(r+=e+"</"+t.tagName+">"),r},i}();e.StartTagToken=function(){function a(t,e,r,n,o,i){s(this,a),this.type="startTag",this.length=e,this.text="",this.tagName=t,this.attrs=r,this.booleanAttrs=n,this.html5Unary=!1,this.unary=o,this.rest=i}return a.prototype.toString=function(){return n.formatTag(this)},a}(),e.AtomicTagToken=function(){function i(t,e,r,n,o){s(this,i),this.type="atomicTag",this.length=e,this.text="",this.tagName=t,this.attrs=r,this.booleanAttrs=n,this.unary=!1,this.html5Unary=!1,this.content=o}return i.prototype.toString=function(){return n.formatTag(this,this.content)},i}(),e.EndTagToken=function(){function r(t,e){s(this,r),this.type="endTag",this.length=e,this.text="",this.tagName=t}return r.prototype.toString=function(){return"</"+this.tagName+">"},r}()},function(t,e){"use strict";e.__esModule=!0,e.escapeQuotes=function(t){var e=1<arguments.length&&void 0!==arguments[1]?arguments[1]:"";return t?t.replace(/([^"]*)"/g,function(t,e){return/\\/.test(e)?e+'"':e+'\\"'}):e}},function(t,e){"use strict";e.__esModule=!0,e.default=function(i,r,a){var n=(t=[],t.last=function(){return this[this.length-1]},t.lastTagNameEq=function(t){var e=this.last();return e&&e.tagName&&e.tagName.toUpperCase()===t.toUpperCase()},t.containsTagName=function(t){for(var e,r=0;e=this[r];r++)if(e.tagName===t)return!0;return!1},t),s={startTag:function(t){var e=t.tagName;"TR"===e.toUpperCase()&&n.lastTagNameEq("TABLE")?(i.prepend("<TBODY>"),o()):r.selfCloseFix&&u.test(e)&&n.containsTagName(e)?n.lastTagNameEq(e)?l(i,n):(i.prepend("</"+t.tagName+">"),o()):t.unary||n.push(t)},endTag:function(t){var e=n.last();e?r.tagSoupFix&&!n.lastTagNameEq(t.tagName)?l(i,n):n.pop():r.tagSoupFix&&(a(),o())}};var t;function o(){var t,e,r,n,o=(e=a,r=(t=i).stream,n=c(e()),t.stream=r,n);o&&s[o.type]&&s[o.type](o)}return function(){return o(),c(a())}};var r=/^(AREA|BASE|BASEFONT|BR|COL|FRAME|HR|IMG|INPUT|ISINDEX|LINK|META|PARAM|EMBED)$/i,u=/^(COLGROUP|DD|DT|LI|OPTIONS|P|TD|TFOOT|TH|THEAD|TR)$/i;function c(t){return t&&"startTag"===t.type&&(t.unary=r.test(t.tagName)||t.unary,t.html5Unary=!/\/>$/.test(t.text)),t}function l(t,e){var r=e.pop();t.prepend("</"+r.tagName+">")}}])},t.exports=n()},function(t,e){"use strict";e.__esModule=!0;var o="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t};function n(t){return null!=t}function i(t,e,r){var n=void 0,o=t&&t.length||0;for(n=0;n<o;n++)e.call(r,t[n],n)}function a(t,e,r){for(var n in t)t.hasOwnProperty(n)&&e.call(r,n,t[n])}function r(t,e){return!(!t||"startTag"!==t.type&&"atomicTag"!==t.type||!("tagName"in t))&&!!~t.tagName.toLowerCase().indexOf(e)}e.existy=n,e.isFunction=function(t){return"function"==typeof t},e.each=i,e.eachKey=a,e.defaults=function(r,t){return r=r||{},a(t,function(t,e){n(r[t])||(r[t]=e)}),r},e.toArray=function(e){try{return Array.prototype.slice.call(e)}catch(t){var r=(n=[],i(e,function(t){n.push(t)}),{v:n});if("object"===(void 0===r?"undefined":o(r)))return r.v}var n},e.last=function(t){return t[t.length-1]},e.isTag=r,e.isScript=function(t){return r(t,"script")},e.isStyle=function(t){return r(t,"style")}}])},t.exports=n()},function(t,e,r){"use strict";function n(t){return"string"==typeof t.uuid&&""!=t.uuid&&i()}function o(){return window.$sf&&window.$sf.ext}function i(){return window.top!==window&&!window.frameElement}Object.defineProperty(e,"__esModule",{value:!0}),e.isAmp=n,e.isSafeFrame=o,e.isCrossDomain=i,e.isMobileApp=function(t){return t.env&&"mobile-app"===t.env}}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(1);
+
+var utils = _interopRequireWildcard(_utils);
+
+var _environment = __webpack_require__(3);
+
+var environment = _interopRequireWildcard(_environment);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+/**
+ * creative.js
+ *
+ * This file is inserted into the prebid creative as a placeholder for the winning prebid creative. It should support the following formats:
+ * - Banner
+ * - Outstream Video
+ * - Mobile
+ * - AMP creatives
+ * - All safeFrame creatives
+ */
+
+var pbjs = window.pbjs = window.pbjs || {};
+var GOOGLE_IFRAME_HOSTNAME = '//tpc.googlesyndication.com';
+var DEFAULT_CACHE_HOST = 'prebid.adnxs.com';
+var DEFAULT_CACHE_PATH = '/pbc/v1/cache';
+
+/**
+ * DataObject passed to render the ad
+ * @typedef {Object} dataObject
+ * @property {string} host - Prebid cache host
+ * @property {string} uuid - ID to fetch the value from prebid cache
+ * @property {string} mediaType - Creative media type, It can be banner, native or video
+ * @property {string} pubUrl - Publisher url
+ */
+
+/**
+ * Public render ad function to be used in dfp creative setup
+ * @param  {object} doc
+ * @param  {string} adId
+ * @param  {dataObject} dataObject
+ */
+pbjs.renderAd = function (doc, adId, dataObject) {
+  admob.events.dispatchAppEvent("testAntoine", "renderAd");
+  if (environment.isMobileApp(dataObject)) {
+    admob.events.dispatchAppEvent("testAntoine", "mobileAppCall");
+    renderAmpOrMobileAd(dataObject.cacheHost, dataObject.cachePath, dataObject.uuid, dataObject.size, true);
+  } else if (environment.isAmp(dataObject)) {
+    renderAmpOrMobileAd(dataObject.cacheHost, dataObject.cachePath, dataObject.uuid, dataObject.size);
+  } else if (environment.isCrossDomain()) {
+    renderCrossDomain(adId, dataObject.pubUrl);
+  } else {
+    renderLegacy(doc, adId);
+  }
+};
+
+/**
+ * Calls prebid.js renderAd function to render ad
+ * @param {Object} doc Document
+ * @param {string} adId Id of creative to render
+ */
+function renderLegacy(doc, adId) {
+  var w = window;
+  for (var i = 0; i < 10; i++) {
+    w = w.parent;
+    if (w.pbjs) {
+      try {
+        w.pbjs.renderAd(document, adId);
+        break;
+      } catch (e) {
+        continue;
+      }
+    }
+  }
+}
+
+/**
+ * Render ad in safeframe using postmessage
+ * @param {string} adId Id of creative to render
+ * @param {string} pubUrl Url of publisher page
+ */
+function renderCrossDomain(adId, pubUrl) {
+  var urlParser = document.createElement('a');
+  urlParser.href = pubUrl;
+  var publisherDomain = urlParser.protocol + '//' + urlParser.host;
+  var adServerDomain = urlParser.protocol + GOOGLE_IFRAME_HOSTNAME;
+
+  function renderAd(ev) {
+    var key = ev.message ? 'message' : 'data';
+    var adObject = {};
+    try {
+      adObject = JSON.parse(ev[key]);
+    } catch (e) {
+      return;
+    }
+
+    var origin = ev.origin || ev.originalEvent.origin;
+    if (adObject.message && adObject.message === 'Prebid Response' && publisherDomain === origin && adObject.adId === adId && (adObject.ad || adObject.adUrl)) {
+      var body = window.document.body;
+      var ad = adObject.ad;
+      var url = adObject.adUrl;
+      var width = adObject.width;
+      var height = adObject.height;
+
+      if (adObject.mediaType === 'video') {
+        console.log('Error trying to write ad.');
+      } else if (ad) {
+        var iframe = utils.getEmptyIframe(adObject.height, adObject.width);
+        body.appendChild(iframe);
+        iframe.contentDocument.open();
+        iframe.contentDocument.write(ad);
+        iframe.contentDocument.close();
+      } else if (url) {
+        var _iframe = utils.getEmptyIframe(height, width);
+        _iframe.style.display = 'inline';
+        _iframe.style.overflow = 'hidden';
+        _iframe.src = url;
+
+        utils.insertElement(_iframe, doc, 'body');
+      } else {
+        console.log('Error trying to write ad. No ad for bid response id: ' + id);
+      }
+    }
+  }
+
+  function requestAdFromPrebid() {
+    var message = JSON.stringify({
+      message: 'Prebid Request',
+      adId: adId,
+      adServerDomain: adServerDomain
+    });
+    window.parent.postMessage(message, publisherDomain);
+  }
+
+  function listenAdFromPrebid() {
+    window.addEventListener('message', renderAd, false);
+  }
+
+  listenAdFromPrebid();
+  requestAdFromPrebid();
+}
+
+/**
+ * Returns cache endpoint concatenated with cache path
+ * @param {string} cacheHost Cache Endpoint host
+ * @param {string} cachePath Cache Endpoint path
+ */
+function getCacheEndpoint(cacheHost, cachePath) {
+  var host = typeof cacheHost === 'undefined' || cacheHost === "" ? DEFAULT_CACHE_HOST : cacheHost;
+  var path = typeof cachePath === 'undefined' || cachePath === "" ? DEFAULT_CACHE_PATH : cachePath;
+  return 'https://' + host + path;
+}
+
+/**
+ * Render mobile or amp ad
+ * @param {string} cacheHost Cache host
+ * @param {string} cachePath Cache path
+ * @param {string} uuid id to render response from cache endpoint
+ * @param {Bool} isMobileApp flag to detect mobile app
+ */
+function renderAmpOrMobileAd(cacheHost, cachePath, uuid, size, isMobileApp) {
+  // For MoPub, creative is stored in localStorage via SDK.
+  if (uuid.startsWith('Prebid_')) {
+    loadFromLocalCache(uuid);
+  } else {
+    var adUrl = getCacheEndpoint(cacheHost, cachePath) + '?uuid=' + uuid;
+
+    //register creative right away to not miss initial geom-update
+    if (typeof size !== 'undefined' && size !== "") {
+      var sizeArr = size.split('x').map(Number);
+      resizeIframe(sizeArr[0], sizeArr[1]);
+    } else {
+      console.log('Targeting key hb_size not found to resize creative');
+    }
+    utils.sendRequest(adUrl, responseCallback(isMobileApp));
+  }
+}
+
+/**
+ * Cache request Callback to display creative
+ * @param {Bool} isMobileApp 
+ */
+function responseCallback(isMobileApp) {
+  return function (response) {
+    var bidObject = parseResponse(response);
+    var ad = utils.getCreativeCommentMarkup(bidObject);
+    var width = bidObject.width ? bidObject.width : bidObject.w;
+    var height = bidObject.height ? bidObject.height : bidObject.h;
+    if (bidObject.adm) {
+      ad += isMobileApp ? constructMarkup(bidObject.adm, width, height) : bidObject.adm;
+      if (bidObject.nurl) {
+        ad += utils.createTrackPixelHtml(decodeURIComponent(bidObject.nurl));
+      }
+      utils.writeAdHtml(ad);
+    } else if (bidObject.nurl) {
+      if (isMobileApp) {
+        var adhtml = utils.loadScript(window, bidObject.nurl);
+        ad += constructMarkup(adhtml.outerHTML, width, height);
+        utils.writeAdHtml(ad);
+      } else {
+        var nurl = bidObject.nurl;
+        var commentElm = utils.getCreativeComment(bidObject);
+        utils.insertElement(commentElm, document, 'body');
+        utils.writeAdUrl(nurl, width, height);
+      }
+    }
+    if (bidObject.burl) {
+      utils.triggerBurl(bidObject.burl);
+    }
+  };
+};
+
+/**
+ * Load response from localStorage. In case of MoPub, sdk caches response
+ * @param {string} cacheId 
+ */
+function loadFromLocalCache(cacheId) {
+  var bid = localStorage.getItem(cacheId);
+  var displayFn = responseCallback(true);
+  displayFn(bid);
+}
+
+/**
+ * Parse response
+ * @param {string} response 
+ */
+function parseResponse(response) {
+  var bidObject = void 0;
+  try {
+    bidObject = JSON.parse(response);
+  } catch (error) {
+    console.log('Error parsing response from cache host: ' + error);
+  }
+  return bidObject;
+}
+
+/**
+ * Wrap mobile app creative in div
+ * @param {string} ad 
+ * @param {Number} width 
+ * @param {Number} height 
+ */
+function constructMarkup(ad, width, height) {
+  var id = utils.getUUID();
+  return '<div id="' + id + '" style="border-style: none; position: absolute; width:100%; height:100%;">\n    <div id="' + id + '_inner" style="margin: 0 auto; width:' + width + '; height:' + height + '">' + ad + '</div>\n    </div>';
+}
+
+function resizeIframe(width, height) {
+  if (environment.isSafeFrame()) {
+    var resize = function resize(status) {
+      var newWidth = width - iframeWidth;
+      var newHeight = height - iframeHeight;
+      $sf.ext.expand({ r: newWidth, b: newHeight, push: true });
+    };
+
+    var iframeWidth = window.innerWidth;
+    var iframeHeight = window.innerHeight;
+
+    if (iframeWidth !== width || iframeHeight !== height) {
+      $sf.ext.register(width, height, resize);
+      // we need to resize the DFP container as well
+      window.parent.postMessage({
+        sentinel: 'amp',
+        type: 'embed-size',
+        width: width,
+        height: height
+      }, '*');
+    }
+  }
+}
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createTrackPixelHtml = createTrackPixelHtml;
+exports.writeAdUrl = writeAdUrl;
+exports.writeAdHtml = writeAdHtml;
+exports.sendRequest = sendRequest;
+exports.getEmptyIframe = getEmptyIframe;
+exports.getUUID = getUUID;
+exports.loadScript = loadScript;
+exports.getCreativeComment = getCreativeComment;
+exports.getCreativeCommentMarkup = getCreativeCommentMarkup;
+exports.insertElement = insertElement;
+exports.triggerBurl = triggerBurl;
+var postscribe = __webpack_require__(2);
+
+function createTrackPixelHtml(url) {
+  if (!url) {
+    return '';
+  }
+
+  var escapedUrl = encodeURI(url);
+  var img = '<div style="position:absolute;left:0px;top:0px;visibility:hidden;"><img src="' + escapedUrl + '"></div>';
+  return img;
+}
+
+function writeAdUrl(adUrl, width, height) {
+  var iframe = getEmptyIframe(height, width);
+  iframe.src = adUrl;
+  document.body.appendChild(iframe);
+}
+
+function writeAdHtml(markup) {
+  postscribe(document.body, markup);
+}
+
+function sendRequest(url, callback) {
+  function reqListener() {
+    callback(oReq.responseText);
+  }
+
+  var oReq = new XMLHttpRequest();
+  oReq.addEventListener('load', reqListener);
+  oReq.open('GET', url);
+  oReq.send();
+}
+
+function getEmptyIframe(height, width) {
+  var frame = document.createElement('iframe');
+  frame.setAttribute('frameborder', 0);
+  frame.setAttribute('scrolling', 'no');
+  frame.setAttribute('marginheight', 0);
+  frame.setAttribute('marginwidth', 0);
+  frame.setAttribute('TOPMARGIN', 0);
+  frame.setAttribute('LEFTMARGIN', 0);
+  frame.setAttribute('allowtransparency', 'true');
+  frame.setAttribute('width', width);
+  frame.setAttribute('height', height);
+  return frame;
+}
+
+function getUUID() {
+  var d = new Date().getTime();
+  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (d + Math.random() * 16) % 16 | 0;
+    d = Math.floor(d / 16);
+    return (c === 'x' ? r : r & 0x3 | 0x8).toString(16);
+  });
+  return uuid;
+};
+
+function loadScript(currentWindow, tagSrc, callback) {
+  var doc = currentWindow.document;
+  var scriptTag = doc.createElement('script');
+  scriptTag.type = 'text/javascript';
+
+  // Execute a callback if necessary
+  if (callback && typeof callback === 'function') {
+    if (scriptTag.readyState) {
+      scriptTag.onreadystatechange = function () {
+        if (scriptTag.readyState === 'loaded' || scriptTag.readyState === 'complete') {
+          scriptTag.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else {
+      scriptTag.onload = function () {
+        callback();
+      };
+    }
+  }
+
+  scriptTag.src = tagSrc;
+
+  //add the new script tag to the page
+  var elToAppend = doc.getElementsByTagName('head');
+  elToAppend = elToAppend.length ? elToAppend : doc.getElementsByTagName('body');
+  if (elToAppend.length) {
+    elToAppend = elToAppend[0];
+    elToAppend.insertBefore(scriptTag, elToAppend.firstChild);
+  }
+
+  return scriptTag;
+};
+
+/**
+ * Return comment element
+ * @param {*} bid 
+ */
+function getCreativeComment(bid) {
+  return document.createComment('Creative ' + bid.crid + ' served by Prebid.js Header Bidding');
+}
+
+/**
+ * Returns comment element markup
+ * @param {*} bid 
+ */
+function getCreativeCommentMarkup(bid) {
+  var creativeComment = exports.getCreativeComment(bid);
+  var wrapper = document.createElement('div');
+  wrapper.appendChild(creativeComment);
+  return wrapper.innerHTML;
+}
+
+/**
+ * Insert element to passed target
+ * @param {object} elm
+ * @param {object} doc
+ * @param {string} target
+ */
+function insertElement(elm, doc, target) {
+  doc = doc || document;
+  var elToAppend = void 0;
+  if (target) {
+    elToAppend = doc.getElementsByTagName(target);
+  } else {
+    elToAppend = doc.getElementsByTagName('head');
+  }
+  try {
+    elToAppend = elToAppend.length ? elToAppend : doc.getElementsByTagName('body');
+    if (elToAppend.length) {
+      elToAppend = elToAppend[0];
+      elToAppend.insertBefore(elm, elToAppend.firstChild);
+    }
+  } catch (e) {}
+}
+
+function triggerBurl(url) {
+  var img = new Image();
+  img.src = url;
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * @file postscribe
+ * @description Asynchronously write javascript, even with document.write.
+ * @version v2.0.8
+ * @see {@link https://krux.github.io/postscribe}
+ * @license MIT
+ * @author Derek Brans
+ * @copyright 2016 Krux Digital, Inc
+ */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["postscribe"] = factory();
+	else
+		root["postscribe"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+/******/
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _postscribe = __webpack_require__(1);
+	
+	var _postscribe2 = _interopRequireDefault(_postscribe);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	module.exports = _postscribe2['default'];
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	exports['default'] = postscribe;
+	
+	var _writeStream = __webpack_require__(2);
+	
+	var _writeStream2 = _interopRequireDefault(_writeStream);
+	
+	var _utils = __webpack_require__(4);
+	
+	var utils = _interopRequireWildcard(_utils);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	/**
+	 * A function that intentionally does nothing.
+	 */
+	function doNothing() {}
+	
+	/**
+	 * Available options and defaults.
+	 *
+	 * @type {Object}
+	 */
+	var OPTIONS = {
+	  /**
+	   * Called when an async script has loaded.
+	   */
+	  afterAsync: doNothing,
+	
+	  /**
+	   * Called immediately before removing from the write queue.
+	   */
+	  afterDequeue: doNothing,
+	
+	  /**
+	   * Called sync after a stream's first thread release.
+	   */
+	  afterStreamStart: doNothing,
+	
+	  /**
+	   * Called after writing buffered document.write calls.
+	   */
+	  afterWrite: doNothing,
+	
+	  /**
+	   * Allows disabling the autoFix feature of prescribe
+	   */
+	  autoFix: true,
+	
+	  /**
+	   * Called immediately before adding to the write queue.
+	   */
+	  beforeEnqueue: doNothing,
+	
+	  /**
+	   * Called before writing a token.
+	   *
+	   * @param {Object} tok The token
+	   */
+	  beforeWriteToken: function beforeWriteToken(tok) {
+	    return tok;
+	  },
+	
+	  /**
+	   * Called before writing buffered document.write calls.
+	   *
+	   * @param {String} str The string
+	   */
+	  beforeWrite: function beforeWrite(str) {
+	    return str;
+	  },
+	
+	  /**
+	   * Called when evaluation is finished.
+	   */
+	  done: doNothing,
+	
+	  /**
+	   * Called when a write results in an error.
+	   *
+	   * @param {Error} e The error
+	   */
+	  error: function error(e) {
+	    throw new Error(e.msg);
+	  },
+	
+	
+	  /**
+	   * Whether to let scripts w/ async attribute set fall out of the queue.
+	   */
+	  releaseAsync: false
+	};
+	
+	var nextId = 0;
+	var queue = [];
+	var active = null;
+	
+	function nextStream() {
+	  var args = queue.shift();
+	  if (args) {
+	    var options = utils.last(args);
+	
+	    options.afterDequeue();
+	    args.stream = runStream.apply(undefined, args);
+	    options.afterStreamStart();
+	  }
+	}
+	
+	function runStream(el, html, options) {
+	  active = new _writeStream2['default'](el, options);
+	
+	  // Identify this stream.
+	  active.id = nextId++;
+	  active.name = options.name || active.id;
+	  postscribe.streams[active.name] = active;
+	
+	  // Override document.write.
+	  var doc = el.ownerDocument;
+	
+	  var stash = {
+	    close: doc.close,
+	    open: doc.open,
+	    write: doc.write,
+	    writeln: doc.writeln
+	  };
+	
+	  function _write(str) {
+	    str = options.beforeWrite(str);
+	    active.write(str);
+	    options.afterWrite(str);
+	  }
+	
+	  _extends(doc, {
+	    close: doNothing,
+	    open: doNothing,
+	    write: function write() {
+	      for (var _len = arguments.length, str = Array(_len), _key = 0; _key < _len; _key++) {
+	        str[_key] = arguments[_key];
+	      }
+	
+	      return _write(str.join(''));
+	    },
+	    writeln: function writeln() {
+	      for (var _len2 = arguments.length, str = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	        str[_key2] = arguments[_key2];
+	      }
+	
+	      return _write(str.join('') + '\n');
+	    }
+	  });
+	
+	  // Override window.onerror
+	  var oldOnError = active.win.onerror || doNothing;
+	
+	  // This works together with the try/catch around WriteStream::insertScript
+	  // In modern browsers, exceptions in tag scripts go directly to top level
+	  active.win.onerror = function (msg, url, line) {
+	    options.error({ msg: msg + ' - ' + url + ': ' + line });
+	    oldOnError.apply(active.win, [msg, url, line]);
+	  };
+	
+	  // Write to the stream
+	  active.write(html, function () {
+	    // restore document.write
+	    _extends(doc, stash);
+	
+	    // restore window.onerror
+	    active.win.onerror = oldOnError;
+	
+	    options.done();
+	    active = null;
+	    nextStream();
+	  });
+	
+	  return active;
+	}
+	
+	function postscribe(el, html, options) {
+	  if (utils.isFunction(options)) {
+	    options = { done: options };
+	  } else if (options === 'clear') {
+	    queue = [];
+	    active = null;
+	    nextId = 0;
+	    return;
+	  }
+	
+	  options = utils.defaults(options, OPTIONS);
+	
+	  // id selector
+	  if (/^#/.test(el)) {
+	    el = window.document.getElementById(el.substr(1));
+	  } else {
+	    el = el.jquery ? el[0] : el;
+	  }
+	
+	  var args = [el, html, options];
+	
+	  el.postscribe = {
+	    cancel: function cancel() {
+	      if (args.stream) {
+	        args.stream.abort();
+	      } else {
+	        args[1] = doNothing;
+	      }
+	    }
+	  };
+	
+	  options.beforeEnqueue(args);
+	  queue.push(args);
+	
+	  if (!active) {
+	    nextStream();
+	  }
+	
+	  return el.postscribe;
+	}
+	
+	_extends(postscribe, {
+	  // Streams by name.
+	  streams: {},
+	  // Queue of streams.
+	  queue: queue,
+	  // Expose internal classes.
+	  WriteStream: _writeStream2['default']
+	});
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _prescribe = __webpack_require__(3);
+	
+	var _prescribe2 = _interopRequireDefault(_prescribe);
+	
+	var _utils = __webpack_require__(4);
+	
+	var utils = _interopRequireWildcard(_utils);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	/**
+	 * Turn on to debug how each chunk affected the DOM.
+	 * @type {boolean}
+	 */
+	var DEBUG_CHUNK = false;
+	
+	/**
+	 * Prefix for data attributes on DOM elements.
+	 * @type {string}
+	 */
+	var BASEATTR = 'data-ps-';
+	
+	/**
+	 * ID for the style proxy
+	 * @type {string}
+	 */
+	var PROXY_STYLE = 'ps-style';
+	
+	/**
+	 * ID for the script proxy
+	 * @type {string}
+	 */
+	var PROXY_SCRIPT = 'ps-script';
+	
+	/**
+	 * Get data attributes
+	 *
+	 * @param {Object} el The DOM element.
+	 * @param {String} name The attribute name.
+	 * @returns {String}
+	 */
+	function getData(el, name) {
+	  var attr = BASEATTR + name;
+	
+	  var val = el.getAttribute(attr);
+	
+	  // IE 8 returns a number if it's a number
+	  return !utils.existy(val) ? val : String(val);
+	}
+	
+	/**
+	 * Set data attributes
+	 *
+	 * @param {Object} el The DOM element.
+	 * @param {String} name The attribute name.
+	 * @param {null|*} value The attribute value.
+	 */
+	function setData(el, name) {
+	  var value = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+	
+	  var attr = BASEATTR + name;
+	
+	  if (utils.existy(value) && value !== '') {
+	    el.setAttribute(attr, value);
+	  } else {
+	    el.removeAttribute(attr);
+	  }
+	}
+	
+	/**
+	 * Stream static html to an element, where "static html" denotes "html
+	 * without scripts".
+	 *
+	 * This class maintains a *history of writes devoid of any attributes* or
+	 * "proxy history".
+	 *
+	 * Injecting the proxy history into a temporary div has no side-effects,
+	 * other than to create proxy elements for previously written elements.
+	 *
+	 * Given the `staticHtml` of a new write, a `tempDiv`'s innerHTML is set to
+	 * `proxy_history + staticHtml`.
+	 * The *structure* of `tempDiv`'s contents, (i.e., the placement of new nodes
+	 * beside or inside of proxy elements), reflects the DOM structure that would
+	 * have resulted if all writes had been squashed into a single write.
+	 *
+	 * For each descendent `node` of `tempDiv` whose parentNode is a *proxy*,
+	 * `node` is appended to the corresponding *real* element within the DOM.
+	 *
+	 * Proxy elements are mapped to *actual* elements in the DOM by injecting a
+	 * `data-id` attribute into each start tag in `staticHtml`.
+	 *
+	 */
+	
+	var WriteStream = function () {
+	  /**
+	   * Constructor.
+	   *
+	   * @param {Object} root The root element
+	   * @param {?Object} options The options
+	   */
+	  function WriteStream(root) {
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	
+	    _classCallCheck(this, WriteStream);
+	
+	    this.root = root;
+	    this.options = options;
+	    this.doc = root.ownerDocument;
+	    this.win = this.doc.defaultView || this.doc.parentWindow;
+	    this.parser = new _prescribe2['default']('', { autoFix: options.autoFix });
+	
+	    // Actual elements by id.
+	    this.actuals = [root];
+	
+	    // Embodies the "structure" of what's been written so far,
+	    // devoid of attributes.
+	    this.proxyHistory = '';
+	
+	    // Create a proxy of the root element.
+	    this.proxyRoot = this.doc.createElement(root.nodeName);
+	
+	    this.scriptStack = [];
+	    this.writeQueue = [];
+	
+	    setData(this.proxyRoot, 'proxyof', 0);
+	  }
+	
+	  /**
+	   * Writes the given strings.
+	   *
+	   * @param {...String} str The strings to write
+	   */
+	
+	
+	  WriteStream.prototype.write = function write() {
+	    var _writeQueue;
+	
+	    (_writeQueue = this.writeQueue).push.apply(_writeQueue, arguments);
+	
+	    // Process writes
+	    // When new script gets pushed or pending this will stop
+	    // because new writeQueue gets pushed
+	    while (!this.deferredRemote && this.writeQueue.length) {
+	      var arg = this.writeQueue.shift();
+	
+	      if (utils.isFunction(arg)) {
+	        this._callFunction(arg);
+	      } else {
+	        this._writeImpl(arg);
+	      }
+	    }
+	  };
+	
+	  /**
+	   * Calls the given function.
+	   *
+	   * @param {Function} fn The function to call
+	   * @private
+	   */
+	
+	
+	  WriteStream.prototype._callFunction = function _callFunction(fn) {
+	    var tok = { type: 'function', value: fn.name || fn.toString() };
+	    this._onScriptStart(tok);
+	    fn.call(this.win, this.doc);
+	    this._onScriptDone(tok);
+	  };
+	
+	  /**
+	   * The write implementation
+	   *
+	   * @param {String} html The HTML to write.
+	   * @private
+	   */
+	
+	
+	  WriteStream.prototype._writeImpl = function _writeImpl(html) {
+	    this.parser.append(html);
+	
+	    var tok = void 0;
+	    var script = void 0;
+	    var style = void 0;
+	    var tokens = [];
+	
+	    // stop if we see a script token
+	    while ((tok = this.parser.readToken()) && !(script = utils.isScript(tok)) && !(style = utils.isStyle(tok))) {
+	      tok = this.options.beforeWriteToken(tok);
+	
+	      if (tok) {
+	        tokens.push(tok);
+	      }
+	    }
+	
+	    if (tokens.length > 0) {
+	      this._writeStaticTokens(tokens);
+	    }
+	
+	    if (script) {
+	      this._handleScriptToken(tok);
+	    }
+	
+	    if (style) {
+	      this._handleStyleToken(tok);
+	    }
+	  };
+	
+	  /**
+	   * Write contiguous non-script tokens (a chunk)
+	   *
+	   * @param {Array<Object>} tokens The tokens
+	   * @returns {{tokens, raw, actual, proxy}|null}
+	   * @private
+	   */
+	
+	
+	  WriteStream.prototype._writeStaticTokens = function _writeStaticTokens(tokens) {
+	    var chunk = this._buildChunk(tokens);
+	
+	    if (!chunk.actual) {
+	      // e.g., no tokens, or a noscript that got ignored
+	      return null;
+	    }
+	
+	    chunk.html = this.proxyHistory + chunk.actual;
+	    this.proxyHistory += chunk.proxy;
+	    this.proxyRoot.innerHTML = chunk.html;
+	
+	    if (DEBUG_CHUNK) {
+	      chunk.proxyInnerHTML = this.proxyRoot.innerHTML;
+	    }
+	
+	    this._walkChunk();
+	
+	    if (DEBUG_CHUNK) {
+	      chunk.actualInnerHTML = this.root.innerHTML;
+	    }
+	
+	    return chunk;
+	  };
+	
+	  /**
+	   * Build a chunk.
+	   *
+	   * @param {Array<Object>} tokens The tokens to use.
+	   * @returns {{tokens: *, raw: string, actual: string, proxy: string}}
+	   * @private
+	   */
+	
+	
+	  WriteStream.prototype._buildChunk = function _buildChunk(tokens) {
+	    var nextId = this.actuals.length;
+	
+	    // The raw html of this chunk.
+	    var raw = [];
+	
+	    // The html to create the nodes in the tokens (with id's injected).
+	    var actual = [];
+	
+	    // Html that can later be used to proxy the nodes in the tokens.
+	    var proxy = [];
+	
+	    var len = tokens.length;
+	    for (var i = 0; i < len; i++) {
+	      var tok = tokens[i];
+	      var tokenRaw = tok.toString();
+	
+	      raw.push(tokenRaw);
+	
+	      if (tok.attrs) {
+	        // tok.attrs <==> startTag or atomicTag or cursor
+	        // Ignore noscript tags. They are atomic, so we don't have to worry about children.
+	        if (!/^noscript$/i.test(tok.tagName)) {
+	          var id = nextId++;
+	
+	          // Actual: inject id attribute: replace '>' at end of start tag with id attribute + '>'
+	          actual.push(tokenRaw.replace(/(\/?>)/, ' ' + BASEATTR + 'id=' + id + ' $1'));
+	
+	          // Don't proxy scripts: they have no bearing on DOM structure.
+	          if (tok.attrs.id !== PROXY_SCRIPT && tok.attrs.id !== PROXY_STYLE) {
+	            // Proxy: strip all attributes and inject proxyof attribute
+	            proxy.push(
+	            // ignore atomic tags (e.g., style): they have no "structural" effect
+	            tok.type === 'atomicTag' ? '' : '<' + tok.tagName + ' ' + BASEATTR + 'proxyof=' + id + (tok.unary ? ' />' : '>'));
+	          }
+	        }
+	      } else {
+	        // Visit any other type of token
+	        // Actual: append.
+	        actual.push(tokenRaw);
+	
+	        // Proxy: append endTags. Ignore everything else.
+	        proxy.push(tok.type === 'endTag' ? tokenRaw : '');
+	      }
+	    }
+	
+	    return {
+	      tokens: tokens,
+	      raw: raw.join(''),
+	      actual: actual.join(''),
+	      proxy: proxy.join('')
+	    };
+	  };
+	
+	  /**
+	   * Walk the chunks.
+	   *
+	   * @private
+	   */
+	
+	
+	  WriteStream.prototype._walkChunk = function _walkChunk() {
+	    var node = void 0;
+	    var stack = [this.proxyRoot];
+	
+	    // use shift/unshift so that children are walked in document order
+	    while (utils.existy(node = stack.shift())) {
+	      var isElement = node.nodeType === 1;
+	      var isProxy = isElement && getData(node, 'proxyof');
+	
+	      // Ignore proxies
+	      if (!isProxy) {
+	        if (isElement) {
+	          // New actual element: register it and remove the the id attr.
+	          this.actuals[getData(node, 'id')] = node;
+	          setData(node, 'id');
+	        }
+	
+	        // Is node's parent a proxy?
+	        var parentIsProxyOf = node.parentNode && getData(node.parentNode, 'proxyof');
+	        if (parentIsProxyOf) {
+	          // Move node under actual parent.
+	          this.actuals[parentIsProxyOf].appendChild(node);
+	        }
+	      }
+	
+	      // prepend childNodes to stack
+	      stack.unshift.apply(stack, utils.toArray(node.childNodes));
+	    }
+	  };
+	
+	  /**
+	   * Handles Script tokens
+	   *
+	   * @param {Object} tok The token
+	   */
+	
+	
+	  WriteStream.prototype._handleScriptToken = function _handleScriptToken(tok) {
+	    var _this = this;
+	
+	    var remainder = this.parser.clear();
+	
+	    if (remainder) {
+	      // Write remainder immediately behind this script.
+	      this.writeQueue.unshift(remainder);
+	    }
+	
+	    tok.src = tok.attrs.src || tok.attrs.SRC;
+	
+	    tok = this.options.beforeWriteToken(tok);
+	    if (!tok) {
+	      // User has removed this token
+	      return;
+	    }
+	
+	    if (tok.src && this.scriptStack.length) {
+	      // Defer this script until scriptStack is empty.
+	      // Assumption 1: This script will not start executing until
+	      // scriptStack is empty.
+	      this.deferredRemote = tok;
+	    } else {
+	      this._onScriptStart(tok);
+	    }
+	
+	    // Put the script node in the DOM.
+	    this._writeScriptToken(tok, function () {
+	      _this._onScriptDone(tok);
+	    });
+	  };
+	
+	  /**
+	   * Handles style tokens
+	   *
+	   * @param {Object} tok The token
+	   */
+	
+	
+	  WriteStream.prototype._handleStyleToken = function _handleStyleToken(tok) {
+	    var remainder = this.parser.clear();
+	
+	    if (remainder) {
+	      // Write remainder immediately behind this style.
+	      this.writeQueue.unshift(remainder);
+	    }
+	
+	    tok.type = tok.attrs.type || tok.attrs.TYPE || 'text/css';
+	
+	    tok = this.options.beforeWriteToken(tok);
+	
+	    if (tok) {
+	      // Put the style node in the DOM.
+	      this._writeStyleToken(tok);
+	    }
+	
+	    if (remainder) {
+	      this.write();
+	    }
+	  };
+	
+	  /**
+	   * Build a style and insert it into the DOM.
+	   *
+	   * @param {Object} tok The token
+	   */
+	
+	
+	  WriteStream.prototype._writeStyleToken = function _writeStyleToken(tok) {
+	    var el = this._buildStyle(tok);
+	
+	    this._insertCursor(el, PROXY_STYLE);
+	
+	    // Set content
+	    if (tok.content) {
+	      if (el.styleSheet && !el.sheet) {
+	        el.styleSheet.cssText = tok.content;
+	      } else {
+	        el.appendChild(this.doc.createTextNode(tok.content));
+	      }
+	    }
+	  };
+	
+	  /**
+	   * Build a style element from an atomic style token.
+	   *
+	   * @param {Object} tok The token
+	   * @returns {Element}
+	   */
+	
+	
+	  WriteStream.prototype._buildStyle = function _buildStyle(tok) {
+	    var el = this.doc.createElement(tok.tagName);
+	
+	    el.setAttribute('type', tok.type);
+	
+	    // Set attributes
+	    utils.eachKey(tok.attrs, function (name, value) {
+	      el.setAttribute(name, value);
+	    });
+	
+	    return el;
+	  };
+	
+	  /**
+	   * Append a span to the stream. That span will act as a cursor
+	   * (i.e. insertion point) for the element.
+	   *
+	   * @param {Object} el The element
+	   * @param {string} which The type of proxy element
+	   */
+	
+	
+	  WriteStream.prototype._insertCursor = function _insertCursor(el, which) {
+	    this._writeImpl('<span id="' + which + '"/>');
+	
+	    var cursor = this.doc.getElementById(which);
+	
+	    if (cursor) {
+	      cursor.parentNode.replaceChild(el, cursor);
+	    }
+	  };
+	
+	  /**
+	   * Called when a script is started.
+	   *
+	   * @param {Object} tok The token
+	   * @private
+	   */
+	
+	
+	  WriteStream.prototype._onScriptStart = function _onScriptStart(tok) {
+	    tok.outerWrites = this.writeQueue;
+	    this.writeQueue = [];
+	    this.scriptStack.unshift(tok);
+	  };
+	
+	  /**
+	   * Called when a script is done.
+	   *
+	   * @param {Object} tok The token
+	   * @private
+	   */
+	
+	
+	  WriteStream.prototype._onScriptDone = function _onScriptDone(tok) {
+	    // Pop script and check nesting.
+	    if (tok !== this.scriptStack[0]) {
+	      this.options.error({ msg: 'Bad script nesting or script finished twice' });
+	      return;
+	    }
+	
+	    this.scriptStack.shift();
+	
+	    // Append outer writes to queue and process them.
+	    this.write.apply(this, tok.outerWrites);
+	
+	    // Check for pending remote
+	
+	    // Assumption 2: if remote_script1 writes remote_script2 then
+	    // the we notice remote_script1 finishes before remote_script2 starts.
+	    // I think this is equivalent to assumption 1
+	    if (!this.scriptStack.length && this.deferredRemote) {
+	      this._onScriptStart(this.deferredRemote);
+	      this.deferredRemote = null;
+	    }
+	  };
+	
+	  /**
+	   * Build a script and insert it into the DOM.
+	   * Done is called once script has executed.
+	   *
+	   * @param {Object} tok The token
+	   * @param {Function} done The callback when complete
+	   */
+	
+	
+	  WriteStream.prototype._writeScriptToken = function _writeScriptToken(tok, done) {
+	    var el = this._buildScript(tok);
+	    var asyncRelease = this._shouldRelease(el);
+	    var afterAsync = this.options.afterAsync;
+	
+	    if (tok.src) {
+	      // Fix for attribute "SRC" (capitalized). IE does not recognize it.
+	      el.src = tok.src;
+	      this._scriptLoadHandler(el, !asyncRelease ? function () {
+	        done();
+	        afterAsync();
+	      } : afterAsync);
+	    }
+	
+	    try {
+	      this._insertCursor(el, PROXY_SCRIPT);
+	      if (!el.src || asyncRelease) {
+	        done();
+	      }
+	    } catch (e) {
+	      this.options.error(e);
+	      done();
+	    }
+	  };
+	
+	  /**
+	   * Build a script element from an atomic script token.
+	   *
+	   * @param {Object} tok The token
+	   * @returns {Element}
+	   */
+	
+	
+	  WriteStream.prototype._buildScript = function _buildScript(tok) {
+	    var el = this.doc.createElement(tok.tagName);
+	
+	    // Set attributes
+	    utils.eachKey(tok.attrs, function (name, value) {
+	      el.setAttribute(name, value);
+	    });
+	
+	    // Set content
+	    if (tok.content) {
+	      el.text = tok.content;
+	    }
+	
+	    return el;
+	  };
+	
+	  /**
+	   * Setup the script load handler on an element.
+	   *
+	   * @param {Object} el The element
+	   * @param {Function} done The callback
+	   * @private
+	   */
+	
+	
+	  WriteStream.prototype._scriptLoadHandler = function _scriptLoadHandler(el, done) {
+	    function cleanup() {
+	      el = el.onload = el.onreadystatechange = el.onerror = null;
+	    }
+	
+	    var error = this.options.error;
+	
+	    function success() {
+	      cleanup();
+	      if (done != null) {
+	        done();
+	      }
+	      done = null;
+	    }
+	
+	    function failure(err) {
+	      cleanup();
+	      error(err);
+	      if (done != null) {
+	        done();
+	      }
+	      done = null;
+	    }
+	
+	    function reattachEventListener(el, evt) {
+	      var handler = el['on' + evt];
+	      if (handler != null) {
+	        el['_on' + evt] = handler;
+	      }
+	    }
+	
+	    reattachEventListener(el, 'load');
+	    reattachEventListener(el, 'error');
+	
+	    _extends(el, {
+	      onload: function onload() {
+	        if (el._onload) {
+	          try {
+	            el._onload.apply(this, Array.prototype.slice.call(arguments, 0));
+	          } catch (err) {
+	            failure({ msg: 'onload handler failed ' + err + ' @ ' + el.src });
+	          }
+	        }
+	        success();
+	      },
+	      onerror: function onerror() {
+	        if (el._onerror) {
+	          try {
+	            el._onerror.apply(this, Array.prototype.slice.call(arguments, 0));
+	          } catch (err) {
+	            failure({ msg: 'onerror handler failed ' + err + ' @ ' + el.src });
+	            return;
+	          }
+	        }
+	        failure({ msg: 'remote script failed ' + el.src });
+	      },
+	      onreadystatechange: function onreadystatechange() {
+	        if (/^(loaded|complete)$/.test(el.readyState)) {
+	          success();
+	        }
+	      }
+	    });
+	  };
+	
+	  /**
+	   * Determines whether to release.
+	   *
+	   * @param {Object} el The element
+	   * @returns {boolean}
+	   * @private
+	   */
+	
+	
+	  WriteStream.prototype._shouldRelease = function _shouldRelease(el) {
+	    var isScript = /^script$/i.test(el.nodeName);
+	    return !isScript || !!(this.options.releaseAsync && el.src && el.hasAttribute('async'));
+	  };
+	
+	  return WriteStream;
+	}();
+	
+	exports['default'] = WriteStream;
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * @file prescribe
+	 * @description Tiny, forgiving HTML parser
+	 * @version vundefined
+	 * @see {@link https://github.com/krux/prescribe/}
+	 * @license MIT
+	 * @author Derek Brans
+	 * @copyright 2016 Krux Digital, Inc
+	 */
+	(function webpackUniversalModuleDefinition(root, factory) {
+		if(true)
+			module.exports = factory();
+		else if(typeof define === 'function' && define.amd)
+			define([], factory);
+		else if(typeof exports === 'object')
+			exports["Prescribe"] = factory();
+		else
+			root["Prescribe"] = factory();
+	})(this, function() {
+	return /******/ (function(modules) { // webpackBootstrap
+	/******/ 	// The module cache
+	/******/ 	var installedModules = {};
+	
+	/******/ 	// The require function
+	/******/ 	function __webpack_require__(moduleId) {
+	
+	/******/ 		// Check if module is in cache
+	/******/ 		if(installedModules[moduleId])
+	/******/ 			return installedModules[moduleId].exports;
+	
+	/******/ 		// Create a new module (and put it into the cache)
+	/******/ 		var module = installedModules[moduleId] = {
+	/******/ 			exports: {},
+	/******/ 			id: moduleId,
+	/******/ 			loaded: false
+	/******/ 		};
+	
+	/******/ 		// Execute the module function
+	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+	
+	/******/ 		// Flag the module as loaded
+	/******/ 		module.loaded = true;
+	
+	/******/ 		// Return the exports of the module
+	/******/ 		return module.exports;
+	/******/ 	}
+	
+	
+	/******/ 	// expose the modules object (__webpack_modules__)
+	/******/ 	__webpack_require__.m = modules;
+	
+	/******/ 	// expose the module cache
+	/******/ 	__webpack_require__.c = installedModules;
+	
+	/******/ 	// __webpack_public_path__
+	/******/ 	__webpack_require__.p = "";
+	
+	/******/ 	// Load entry module and return exports
+	/******/ 	return __webpack_require__(0);
+	/******/ })
+	/************************************************************************/
+	/******/ ([
+	/* 0 */
+	/***/ function(module, exports, __webpack_require__) {
+	
+		'use strict';
+	
+		var _HtmlParser = __webpack_require__(1);
+	
+		var _HtmlParser2 = _interopRequireDefault(_HtmlParser);
+	
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+		module.exports = _HtmlParser2['default'];
+	
+	/***/ },
+	/* 1 */
+	/***/ function(module, exports, __webpack_require__) {
+	
+		'use strict';
+	
+		exports.__esModule = true;
+	
+		var _supports = __webpack_require__(2);
+	
+		var supports = _interopRequireWildcard(_supports);
+	
+		var _streamReaders = __webpack_require__(3);
+	
+		var streamReaders = _interopRequireWildcard(_streamReaders);
+	
+		var _fixedReadTokenFactory = __webpack_require__(6);
+	
+		var _fixedReadTokenFactory2 = _interopRequireDefault(_fixedReadTokenFactory);
+	
+		var _utils = __webpack_require__(5);
+	
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+		function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+	
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+		/**
+		 * Detection regular expressions.
+		 *
+		 * Order of detection matters: detection of one can only
+		 * succeed if detection of previous didn't
+	
+		 * @type {Object}
+		 */
+		var detect = {
+		  comment: /^<!--/,
+		  endTag: /^<\//,
+		  atomicTag: /^<\s*(script|style|noscript|iframe|textarea)[\s\/>]/i,
+		  startTag: /^</,
+		  chars: /^[^<]/
+		};
+	
+		/**
+		 * HtmlParser provides the capability to parse HTML and return tokens
+		 * representing the tags and content.
+		 */
+	
+		var HtmlParser = function () {
+		  /**
+		   * Constructor.
+		   *
+		   * @param {string} stream The initial parse stream contents.
+		   * @param {Object} options The options
+		   * @param {boolean} options.autoFix Set to true to automatically fix errors
+		   */
+		  function HtmlParser() {
+		    var _this = this;
+	
+		    var stream = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+		    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	
+		    _classCallCheck(this, HtmlParser);
+	
+		    this.stream = stream;
+	
+		    var fix = false;
+		    var fixedTokenOptions = {};
+	
+		    for (var key in supports) {
+		      if (supports.hasOwnProperty(key)) {
+		        if (options.autoFix) {
+		          fixedTokenOptions[key + 'Fix'] = true; // !supports[key];
+		        }
+		        fix = fix || fixedTokenOptions[key + 'Fix'];
+		      }
+		    }
+	
+		    if (fix) {
+		      this._readToken = (0, _fixedReadTokenFactory2['default'])(this, fixedTokenOptions, function () {
+		        return _this._readTokenImpl();
+		      });
+		      this._peekToken = (0, _fixedReadTokenFactory2['default'])(this, fixedTokenOptions, function () {
+		        return _this._peekTokenImpl();
+		      });
+		    } else {
+		      this._readToken = this._readTokenImpl;
+		      this._peekToken = this._peekTokenImpl;
+		    }
+		  }
+	
+		  /**
+		   * Appends the given string to the parse stream.
+		   *
+		   * @param {string} str The string to append
+		   */
+	
+	
+		  HtmlParser.prototype.append = function append(str) {
+		    this.stream += str;
+		  };
+	
+		  /**
+		   * Prepends the given string to the parse stream.
+		   *
+		   * @param {string} str The string to prepend
+		   */
+	
+	
+		  HtmlParser.prototype.prepend = function prepend(str) {
+		    this.stream = str + this.stream;
+		  };
+	
+		  /**
+		   * The implementation of the token reading.
+		   *
+		   * @private
+		   * @returns {?Token}
+		   */
+	
+	
+		  HtmlParser.prototype._readTokenImpl = function _readTokenImpl() {
+		    var token = this._peekTokenImpl();
+		    if (token) {
+		      this.stream = this.stream.slice(token.length);
+		      return token;
+		    }
+		  };
+	
+		  /**
+		   * The implementation of token peeking.
+		   *
+		   * @returns {?Token}
+		   */
+	
+	
+		  HtmlParser.prototype._peekTokenImpl = function _peekTokenImpl() {
+		    for (var type in detect) {
+		      if (detect.hasOwnProperty(type)) {
+		        if (detect[type].test(this.stream)) {
+		          var token = streamReaders[type](this.stream);
+	
+		          if (token) {
+		            if (token.type === 'startTag' && /script|style/i.test(token.tagName)) {
+		              return null;
+		            } else {
+		              token.text = this.stream.substr(0, token.length);
+		              return token;
+		            }
+		          }
+		        }
+		      }
+		    }
+		  };
+	
+		  /**
+		   * The public token peeking interface.  Delegates to the basic token peeking
+		   * or a version that performs fixups depending on the `autoFix` setting in
+		   * options.
+		   *
+		   * @returns {object}
+		   */
+	
+	
+		  HtmlParser.prototype.peekToken = function peekToken() {
+		    return this._peekToken();
+		  };
+	
+		  /**
+		   * The public token reading interface.  Delegates to the basic token reading
+		   * or a version that performs fixups depending on the `autoFix` setting in
+		   * options.
+		   *
+		   * @returns {object}
+		   */
+	
+	
+		  HtmlParser.prototype.readToken = function readToken() {
+		    return this._readToken();
+		  };
+	
+		  /**
+		   * Read tokens and hand to the given handlers.
+		   *
+		   * @param {Object} handlers The handlers to use for the different tokens.
+		   */
+	
+	
+		  HtmlParser.prototype.readTokens = function readTokens(handlers) {
+		    var tok = void 0;
+		    while (tok = this.readToken()) {
+		      // continue until we get an explicit "false" return
+		      if (handlers[tok.type] && handlers[tok.type](tok) === false) {
+		        return;
+		      }
+		    }
+		  };
+	
+		  /**
+		   * Clears the parse stream.
+		   *
+		   * @returns {string} The contents of the parse stream before clearing.
+		   */
+	
+	
+		  HtmlParser.prototype.clear = function clear() {
+		    var rest = this.stream;
+		    this.stream = '';
+		    return rest;
+		  };
+	
+		  /**
+		   * Returns the rest of the parse stream.
+		   *
+		   * @returns {string} The contents of the parse stream.
+		   */
+	
+	
+		  HtmlParser.prototype.rest = function rest() {
+		    return this.stream;
+		  };
+	
+		  return HtmlParser;
+		}();
+	
+		exports['default'] = HtmlParser;
+	
+	
+		HtmlParser.tokenToString = function (tok) {
+		  return tok.toString();
+		};
+	
+		HtmlParser.escapeAttributes = function (attrs) {
+		  var escapedAttrs = {};
+	
+		  for (var name in attrs) {
+		    if (attrs.hasOwnProperty(name)) {
+		      escapedAttrs[name] = (0, _utils.escapeQuotes)(attrs[name], null);
+		    }
+		  }
+	
+		  return escapedAttrs;
+		};
+	
+		HtmlParser.supports = supports;
+	
+		for (var key in supports) {
+		  if (supports.hasOwnProperty(key)) {
+		    HtmlParser.browserHasFlaw = HtmlParser.browserHasFlaw || !supports[key] && key;
+		  }
+		}
+	
+	/***/ },
+	/* 2 */
+	/***/ function(module, exports) {
+	
+		'use strict';
+	
+		exports.__esModule = true;
+		var tagSoup = false;
+		var selfClose = false;
+	
+		var work = window.document.createElement('div');
+	
+		try {
+		  var html = '<P><I></P></I>';
+		  work.innerHTML = html;
+		  exports.tagSoup = tagSoup = work.innerHTML !== html;
+		} catch (e) {
+		  exports.tagSoup = tagSoup = false;
+		}
+	
+		try {
+		  work.innerHTML = '<P><i><P></P></i></P>';
+		  exports.selfClose = selfClose = work.childNodes.length === 2;
+		} catch (e) {
+		  exports.selfClose = selfClose = false;
+		}
+	
+		work = null;
+	
+		exports.tagSoup = tagSoup;
+		exports.selfClose = selfClose;
+	
+	/***/ },
+	/* 3 */
+	/***/ function(module, exports, __webpack_require__) {
+	
+		'use strict';
+	
+		exports.__esModule = true;
+	
+		var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
+		exports.comment = comment;
+		exports.chars = chars;
+		exports.startTag = startTag;
+		exports.atomicTag = atomicTag;
+		exports.endTag = endTag;
+	
+		var _tokens = __webpack_require__(4);
+	
+		/**
+		 * Regular Expressions for parsing tags and attributes
+		 *
+		 * @type {Object}
+		 */
+		var REGEXES = {
+		  startTag: /^<([\-A-Za-z0-9_]+)((?:\s+[\w\-]+(?:\s*=?\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
+		  endTag: /^<\/([\-A-Za-z0-9_]+)[^>]*>/,
+		  attr: /(?:([\-A-Za-z0-9_]+)\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))|(?:([\-A-Za-z0-9_]+)(\s|$)+)/g,
+		  fillAttr: /^(checked|compact|declare|defer|disabled|ismap|multiple|nohref|noresize|noshade|nowrap|readonly|selected)$/i
+		};
+	
+		/**
+		 * Reads a comment token
+		 *
+		 * @param {string} stream The input stream
+		 * @returns {CommentToken}
+		 */
+		function comment(stream) {
+		  var index = stream.indexOf('-->');
+		  if (index >= 0) {
+		    return new _tokens.CommentToken(stream.substr(4, index - 1), index + 3);
+		  }
+		}
+	
+		/**
+		 * Reads non-tag characters.
+		 *
+		 * @param {string} stream The input stream
+		 * @returns {CharsToken}
+		 */
+		function chars(stream) {
+		  var index = stream.indexOf('<');
+		  return new _tokens.CharsToken(index >= 0 ? index : stream.length);
+		}
+	
+		/**
+		 * Reads start tag token.
+		 *
+		 * @param {string} stream The input stream
+		 * @returns {StartTagToken}
+		 */
+		function startTag(stream) {
+		  var endTagIndex = stream.indexOf('>');
+		  if (endTagIndex !== -1) {
+		    var match = stream.match(REGEXES.startTag);
+		    if (match) {
+		      var _ret = function () {
+		        var attrs = {};
+		        var booleanAttrs = {};
+		        var rest = match[2];
+	
+		        match[2].replace(REGEXES.attr, function (match, name) {
+		          if (!(arguments[2] || arguments[3] || arguments[4] || arguments[5])) {
+		            attrs[name] = '';
+		          } else if (arguments[5]) {
+		            attrs[arguments[5]] = '';
+		            booleanAttrs[arguments[5]] = true;
+		          } else {
+		            attrs[name] = arguments[2] || arguments[3] || arguments[4] || REGEXES.fillAttr.test(name) && name || '';
+		          }
+	
+		          rest = rest.replace(match, '');
+		        });
+	
+		        return {
+		          v: new _tokens.StartTagToken(match[1], match[0].length, attrs, booleanAttrs, !!match[3], rest.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, ''))
+		        };
+		      }();
+	
+		      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+		    }
+		  }
+		}
+	
+		/**
+		 * Reads atomic tag token.
+		 *
+		 * @param {string} stream The input stream
+		 * @returns {AtomicTagToken}
+		 */
+		function atomicTag(stream) {
+		  var start = startTag(stream);
+		  if (start) {
+		    var rest = stream.slice(start.length);
+		    // for optimization, we check first just for the end tag
+		    if (rest.match(new RegExp('<\/\\s*' + start.tagName + '\\s*>', 'i'))) {
+		      // capturing the content is inefficient, so we do it inside the if
+		      var match = rest.match(new RegExp('([\\s\\S]*?)<\/\\s*' + start.tagName + '\\s*>', 'i'));
+		      if (match) {
+		        return new _tokens.AtomicTagToken(start.tagName, match[0].length + start.length, start.attrs, start.booleanAttrs, match[1]);
+		      }
+		    }
+		  }
+		}
+	
+		/**
+		 * Reads an end tag token.
+		 *
+		 * @param {string} stream The input stream
+		 * @returns {EndTagToken}
+		 */
+		function endTag(stream) {
+		  var match = stream.match(REGEXES.endTag);
+		  if (match) {
+		    return new _tokens.EndTagToken(match[1], match[0].length);
+		  }
+		}
+	
+	/***/ },
+	/* 4 */
+	/***/ function(module, exports, __webpack_require__) {
+	
+		'use strict';
+	
+		exports.__esModule = true;
+		exports.EndTagToken = exports.AtomicTagToken = exports.StartTagToken = exports.TagToken = exports.CharsToken = exports.CommentToken = exports.Token = undefined;
+	
+		var _utils = __webpack_require__(5);
+	
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+		/**
+		 * Token is a base class for all token types parsed.  Note we don't actually
+		 * use intheritance due to IE8's non-existent ES5 support.
+		 */
+		var Token =
+		/**
+		 * Constructor.
+		 *
+		 * @param {string} type The type of the Token.
+		 * @param {Number} length The length of the Token text.
+		 */
+		exports.Token = function Token(type, length) {
+		  _classCallCheck(this, Token);
+	
+		  this.type = type;
+		  this.length = length;
+		  this.text = '';
+		};
+	
+		/**
+		 * CommentToken represents comment tags.
+		 */
+	
+	
+		var CommentToken = exports.CommentToken = function () {
+		  /**
+		   * Constructor.
+		   *
+		   * @param {string} content The content of the comment
+		   * @param {Number} length The length of the Token text.
+		   */
+		  function CommentToken(content, length) {
+		    _classCallCheck(this, CommentToken);
+	
+		    this.type = 'comment';
+		    this.length = length || (content ? content.length : 0);
+		    this.text = '';
+		    this.content = content;
+		  }
+	
+		  CommentToken.prototype.toString = function toString() {
+		    return '<!--' + this.content;
+		  };
+	
+		  return CommentToken;
+		}();
+	
+		/**
+		 * CharsToken represents non-tag characters.
+		 */
+	
+	
+		var CharsToken = exports.CharsToken = function () {
+		  /**
+		   * Constructor.
+		   *
+		   * @param {Number} length The length of the Token text.
+		   */
+		  function CharsToken(length) {
+		    _classCallCheck(this, CharsToken);
+	
+		    this.type = 'chars';
+		    this.length = length;
+		    this.text = '';
+		  }
+	
+		  CharsToken.prototype.toString = function toString() {
+		    return this.text;
+		  };
+	
+		  return CharsToken;
+		}();
+	
+		/**
+		 * TagToken is a base class for all tag-based Tokens.
+		 */
+	
+	
+		var TagToken = exports.TagToken = function () {
+		  /**
+		   * Constructor.
+		   *
+		   * @param {string} type The type of the token.
+		   * @param {string} tagName The tag name.
+		   * @param {Number} length The length of the Token text.
+		   * @param {Object} attrs The dictionary of attributes and values
+		   * @param {Object} booleanAttrs If an entry has 'true' then the attribute
+		   *                              is a boolean attribute
+		   */
+		  function TagToken(type, tagName, length, attrs, booleanAttrs) {
+		    _classCallCheck(this, TagToken);
+	
+		    this.type = type;
+		    this.length = length;
+		    this.text = '';
+		    this.tagName = tagName;
+		    this.attrs = attrs;
+		    this.booleanAttrs = booleanAttrs;
+		    this.unary = false;
+		    this.html5Unary = false;
+		  }
+	
+		  /**
+		   * Formats the given token tag.
+		   *
+		   * @param {TagToken} tok The TagToken to format.
+		   * @param {?string} [content=null] The content of the token.
+		   * @returns {string} The formatted tag.
+		   */
+	
+	
+		  TagToken.formatTag = function formatTag(tok) {
+		    var content = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+	
+		    var str = '<' + tok.tagName;
+		    for (var key in tok.attrs) {
+		      if (tok.attrs.hasOwnProperty(key)) {
+		        str += ' ' + key;
+	
+		        var val = tok.attrs[key];
+		        if (typeof tok.booleanAttrs === 'undefined' || typeof tok.booleanAttrs[key] === 'undefined') {
+		          str += '="' + (0, _utils.escapeQuotes)(val) + '"';
+		        }
+		      }
+		    }
+	
+		    if (tok.rest) {
+		      str += ' ' + tok.rest;
+		    }
+	
+		    if (tok.unary && !tok.html5Unary) {
+		      str += '/>';
+		    } else {
+		      str += '>';
+		    }
+	
+		    if (content !== undefined && content !== null) {
+		      str += content + '</' + tok.tagName + '>';
+		    }
+	
+		    return str;
+		  };
+	
+		  return TagToken;
+		}();
+	
+		/**
+		 * StartTagToken represents a start token.
+		 */
+	
+	
+		var StartTagToken = exports.StartTagToken = function () {
+		  /**
+		   * Constructor.
+		   *
+		   * @param {string} tagName The tag name.
+		   * @param {Number} length The length of the Token text
+		   * @param {Object} attrs The dictionary of attributes and values
+		   * @param {Object} booleanAttrs If an entry has 'true' then the attribute
+		   *                              is a boolean attribute
+		   * @param {boolean} unary True if the tag is a unary tag
+		   * @param {string} rest The rest of the content.
+		   */
+		  function StartTagToken(tagName, length, attrs, booleanAttrs, unary, rest) {
+		    _classCallCheck(this, StartTagToken);
+	
+		    this.type = 'startTag';
+		    this.length = length;
+		    this.text = '';
+		    this.tagName = tagName;
+		    this.attrs = attrs;
+		    this.booleanAttrs = booleanAttrs;
+		    this.html5Unary = false;
+		    this.unary = unary;
+		    this.rest = rest;
+		  }
+	
+		  StartTagToken.prototype.toString = function toString() {
+		    return TagToken.formatTag(this);
+		  };
+	
+		  return StartTagToken;
+		}();
+	
+		/**
+		 * AtomicTagToken represents an atomic tag.
+		 */
+	
+	
+		var AtomicTagToken = exports.AtomicTagToken = function () {
+		  /**
+		   * Constructor.
+		   *
+		   * @param {string} tagName The name of the tag.
+		   * @param {Number} length The length of the tag text.
+		   * @param {Object} attrs The attributes.
+		   * @param {Object} booleanAttrs If an entry has 'true' then the attribute
+		   *                              is a boolean attribute
+		   * @param {string} content The content of the tag.
+		   */
+		  function AtomicTagToken(tagName, length, attrs, booleanAttrs, content) {
+		    _classCallCheck(this, AtomicTagToken);
+	
+		    this.type = 'atomicTag';
+		    this.length = length;
+		    this.text = '';
+		    this.tagName = tagName;
+		    this.attrs = attrs;
+		    this.booleanAttrs = booleanAttrs;
+		    this.unary = false;
+		    this.html5Unary = false;
+		    this.content = content;
+		  }
+	
+		  AtomicTagToken.prototype.toString = function toString() {
+		    return TagToken.formatTag(this, this.content);
+		  };
+	
+		  return AtomicTagToken;
+		}();
+	
+		/**
+		 * EndTagToken represents an end tag.
+		 */
+	
+	
+		var EndTagToken = exports.EndTagToken = function () {
+		  /**
+		   * Constructor.
+		   *
+		   * @param {string} tagName The name of the tag.
+		   * @param {Number} length The length of the tag text.
+		   */
+		  function EndTagToken(tagName, length) {
+		    _classCallCheck(this, EndTagToken);
+	
+		    this.type = 'endTag';
+		    this.length = length;
+		    this.text = '';
+		    this.tagName = tagName;
+		  }
+	
+		  EndTagToken.prototype.toString = function toString() {
+		    return '</' + this.tagName + '>';
+		  };
+	
+		  return EndTagToken;
+		}();
+	
+	/***/ },
+	/* 5 */
+	/***/ function(module, exports) {
+	
+		'use strict';
+	
+		exports.__esModule = true;
+		exports.escapeQuotes = escapeQuotes;
+	
+		/**
+		 * Escape quotes in the given value.
+		 *
+		 * @param {string} value The value to escape.
+		 * @param {string} [defaultValue=''] The default value to return if value is falsy.
+		 * @returns {string}
+		 */
+		function escapeQuotes(value) {
+		  var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+	
+		  // There's no lookback in JS, so /(^|[^\\])"/ only matches the first of two `"`s.
+		  // Instead, just match anything before a double-quote and escape if it's not already escaped.
+		  return !value ? defaultValue : value.replace(/([^"]*)"/g, function (_, prefix) {
+		    return (/\\/.test(prefix) ? prefix + '"' : prefix + '\\"'
+		    );
+		  });
+		}
+	
+	/***/ },
+	/* 6 */
+	/***/ function(module, exports) {
+	
+		'use strict';
+	
+		exports.__esModule = true;
+		exports['default'] = fixedReadTokenFactory;
+		/**
+		 * Empty Elements - HTML 4.01
+		 *
+		 * @type {RegExp}
+		 */
+		var EMPTY = /^(AREA|BASE|BASEFONT|BR|COL|FRAME|HR|IMG|INPUT|ISINDEX|LINK|META|PARAM|EMBED)$/i;
+	
+		/**
+		 * Elements that you can intentionally leave open (and which close themselves)
+		 *
+		 * @type {RegExp}
+		 */
+		var CLOSESELF = /^(COLGROUP|DD|DT|LI|OPTIONS|P|TD|TFOOT|TH|THEAD|TR)$/i;
+	
+		/**
+		 * Corrects a token.
+		 *
+		 * @param {Token} tok The token to correct
+		 * @returns {Token} The corrected token
+		 */
+		function correct(tok) {
+		  if (tok && tok.type === 'startTag') {
+		    tok.unary = EMPTY.test(tok.tagName) || tok.unary;
+		    tok.html5Unary = !/\/>$/.test(tok.text);
+		  }
+		  return tok;
+		}
+	
+		/**
+		 * Peeks at the next token in the parser.
+		 *
+		 * @param {HtmlParser} parser The parser
+		 * @param {Function} readTokenImpl The underlying readToken implementation
+		 * @returns {Token} The next token
+		 */
+		function peekToken(parser, readTokenImpl) {
+		  var tmp = parser.stream;
+		  var tok = correct(readTokenImpl());
+		  parser.stream = tmp;
+		  return tok;
+		}
+	
+		/**
+		 * Closes the last token.
+		 *
+		 * @param {HtmlParser} parser The parser
+		 * @param {Array<Token>} stack The stack
+		 */
+		function closeLast(parser, stack) {
+		  var tok = stack.pop();
+	
+		  // prepend close tag to stream.
+		  parser.prepend('</' + tok.tagName + '>');
+		}
+	
+		/**
+		 * Create a new token stack.
+		 *
+		 * @returns {Array<Token>}
+		 */
+		function newStack() {
+		  var stack = [];
+	
+		  stack.last = function () {
+		    return this[this.length - 1];
+		  };
+	
+		  stack.lastTagNameEq = function (tagName) {
+		    var last = this.last();
+		    return last && last.tagName && last.tagName.toUpperCase() === tagName.toUpperCase();
+		  };
+	
+		  stack.containsTagName = function (tagName) {
+		    for (var i = 0, tok; tok = this[i]; i++) {
+		      if (tok.tagName === tagName) {
+		        return true;
+		      }
+		    }
+		    return false;
+		  };
+	
+		  return stack;
+		}
+	
+		/**
+		 * Return a readToken implementation that fixes input.
+		 *
+		 * @param {HtmlParser} parser The parser
+		 * @param {Object} options Options for fixing
+		 * @param {boolean} options.tagSoupFix True to fix tag soup scenarios
+		 * @param {boolean} options.selfCloseFix True to fix self-closing tags
+		 * @param {Function} readTokenImpl The underlying readToken implementation
+		 * @returns {Function}
+		 */
+		function fixedReadTokenFactory(parser, options, readTokenImpl) {
+		  var stack = newStack();
+	
+		  var handlers = {
+		    startTag: function startTag(tok) {
+		      var tagName = tok.tagName;
+	
+		      if (tagName.toUpperCase() === 'TR' && stack.lastTagNameEq('TABLE')) {
+		        parser.prepend('<TBODY>');
+		        prepareNextToken();
+		      } else if (options.selfCloseFix && CLOSESELF.test(tagName) && stack.containsTagName(tagName)) {
+		        if (stack.lastTagNameEq(tagName)) {
+		          closeLast(parser, stack);
+		        } else {
+		          parser.prepend('</' + tok.tagName + '>');
+		          prepareNextToken();
+		        }
+		      } else if (!tok.unary) {
+		        stack.push(tok);
+		      }
+		    },
+		    endTag: function endTag(tok) {
+		      var last = stack.last();
+		      if (last) {
+		        if (options.tagSoupFix && !stack.lastTagNameEq(tok.tagName)) {
+		          // cleanup tag soup
+		          closeLast(parser, stack);
+		        } else {
+		          stack.pop();
+		        }
+		      } else if (options.tagSoupFix) {
+		        // cleanup tag soup part 2: skip this token
+		        readTokenImpl();
+		        prepareNextToken();
+		      }
+		    }
+		  };
+	
+		  function prepareNextToken() {
+		    var tok = peekToken(parser, readTokenImpl);
+		    if (tok && handlers[tok.type]) {
+		      handlers[tok.type](tok);
+		    }
+		  }
+	
+		  return function fixedReadToken() {
+		    prepareNextToken();
+		    return correct(readTokenImpl());
+		  };
+		}
+	
+	/***/ }
+	/******/ ])
+	});
+	;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
+	exports.existy = existy;
+	exports.isFunction = isFunction;
+	exports.each = each;
+	exports.eachKey = eachKey;
+	exports.defaults = defaults;
+	exports.toArray = toArray;
+	exports.last = last;
+	exports.isTag = isTag;
+	exports.isScript = isScript;
+	exports.isStyle = isStyle;
+	/**
+	 * Determine if the thing is not undefined and not null.
+	 *
+	 * @param {*} thing The thing to test
+	 * @returns {boolean} True if the thing is not undefined and not null.
+	 */
+	function existy(thing) {
+	  return thing !== void 0 && thing !== null;
+	}
+	
+	/**
+	 * Is this a function?
+	 *
+	 * @param {*} x The variable to test
+	 * @returns {boolean} True if the variable is a function
+	 */
+	function isFunction(x) {
+	  return 'function' === typeof x;
+	}
+	
+	/**
+	 * Loop over each item in an array-like value.
+	 *
+	 * @param {Array<*>} arr The array to loop over
+	 * @param {Function} fn The function to call
+	 * @param {?Object} target The object to bind to the function
+	 */
+	function each(arr, fn, target) {
+	  var i = void 0;
+	  var len = arr && arr.length || 0;
+	  for (i = 0; i < len; i++) {
+	    fn.call(target, arr[i], i);
+	  }
+	}
+	
+	/**
+	 * Loop over each key/value pair in a hash.
+	 *
+	 * @param {Object} obj The object
+	 * @param {Function} fn The function to call
+	 * @param {?Object} target The object to bind to the function
+	 */
+	function eachKey(obj, fn, target) {
+	  for (var key in obj) {
+	    if (obj.hasOwnProperty(key)) {
+	      fn.call(target, key, obj[key]);
+	    }
+	  }
+	}
+	
+	/**
+	 * Set default options where some option was not specified.
+	 *
+	 * @param {Object} options The destination
+	 * @param {Object} _defaults The defaults
+	 * @returns {Object}
+	 */
+	function defaults(options, _defaults) {
+	  options = options || {};
+	  eachKey(_defaults, function (key, val) {
+	    if (!existy(options[key])) {
+	      options[key] = val;
+	    }
+	  });
+	  return options;
+	}
+	
+	/**
+	 * Convert value (e.g., a NodeList) to an array.
+	 *
+	 * @param {*} obj The object
+	 * @returns {Array<*>}
+	 */
+	function toArray(obj) {
+	  try {
+	    return Array.prototype.slice.call(obj);
+	  } catch (e) {
+	    var _ret = function () {
+	      var ret = [];
+	      each(obj, function (val) {
+	        ret.push(val);
+	      });
+	      return {
+	        v: ret
+	      };
+	    }();
+	
+	    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	  }
+	}
+	
+	/**
+	 * Get the last item in an array
+	 *
+	 * @param {Array<*>} array The array
+	 * @returns {*} The last item in the array
+	 */
+	function last(array) {
+	  return array[array.length - 1];
+	}
+	
+	/**
+	 * Test if token is a script tag.
+	 *
+	 * @param {Object} tok The token
+	 * @param {String} tag The tag name
+	 * @returns {boolean} True if the token is a script tag
+	 */
+	function isTag(tok, tag) {
+	  return !tok || !(tok.type === 'startTag' || tok.type === 'atomicTag') || !('tagName' in tok) ? !1 : !!~tok.tagName.toLowerCase().indexOf(tag);
+	}
+	
+	/**
+	 * Test if token is a script tag.
+	 *
+	 * @param {Object} tok The token
+	 * @returns {boolean} True if the token is a script tag
+	 */
+	function isScript(tok) {
+	  return isTag(tok, 'script');
+	}
+	
+	/**
+	 * Test if token is a style tag.
+	 *
+	 * @param {Object} tok The token
+	 * @returns {boolean} True if the token is a style tag
+	 */
+	function isStyle(tok) {
+	  return isTag(tok, 'style');
+	}
+
+/***/ }
+/******/ ])
+});
+;
+//# sourceMappingURL=postscribe.js.map
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isAmp = isAmp;
+exports.isSafeFrame = isSafeFrame;
+exports.isCrossDomain = isCrossDomain;
+exports.isMobileApp = isMobileApp;
+/***************************************
+ * Detect Environment Helper Functions
+ ***************************************/
+
+/**
+ * Functions to detect below environments:
+ *  CodeOnPage: div directly on publisher's page
+ *  Amp: google Accelerate Mobile Pages ampproject.org
+ *  Dfp: google doubleclick for publishers https://www.doubleclickbygoogle.com/
+ *  DfpInAmp: AMP page containing a DFP iframe
+ *  SafeFrame: SafeFrame
+ *  DfpSafeFrame: An iframe that can't get to the top window
+ *  Sandboxed: An iframe that can't get to the top window
+ *  SuperSandboxed: An iframe without allow-same-origin
+ *  Unknown: A default sandboxed implementation delivered by EnvironmentDispatch when all positive environment checks fail
+ */
+
+/**
+ * @returns true if we are running on the top window at dispatch time
+ */
+function isTopWindow() {
+  return window === window.parent;
+}
+
+/**
+ * @returns true if the environment is both DFP and AMP
+ */
+function isDfpInAmp() {
+  return isDfp() && isAmp();
+}
+
+/**
+ * @returns true if the window is in an iframe whose id and parent element id match DFP
+ */
+function isDfp() {
+  try {
+    var frameElement = window.frameElement;
+    var parentElement = window.frameElement.parentNode;
+    if (frameElement && parentElement) {
+      return frameElement.id.indexOf('google_ads_iframe') > -1 && parentElement.id.indexOf('google_ads_iframe') > -1;
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * @returns true if there is an AMP context object
+ */
+function isAmp(dataObject) {
+  // TODO Use amp context once it is available in cross domain
+  // https://github.com/ampproject/amphtml/issues/6829
+  return typeof dataObject.uuid === 'string' && dataObject.uuid != "" && isCrossDomain();
+}
+
+/**
+ * @returns true if the environment is a SafeFrame.
+ */
+function isSafeFrame() {
+  return window.$sf && window.$sf.ext;
+}
+
+/**
+ * @returns true if the environment is a dfp safe frame.
+ */
+function isDFPSafeFrame() {
+  if (window.location && window.location.href) {
+    var href = window.location.href;
+    return isSafeFrame() && href.indexOf('google') !== -1 && href.indexOf('safeframe') !== -1;
+  }
+  return false;
+}
+
+/**
+ * Return true if we are in an iframe and can't access the top window.
+ */
+function isCrossDomain() {
+  return window.top !== window && !window.frameElement;
+}
+
+/**
+ * Returns true if envrionment is mobile app
+ * @param {Object} dataObject 
+ */
+function isMobileApp(dataObject) {
+  return dataObject.env && dataObject.env === 'mobile-app';
+}
+
+/***/ })
+/******/ ]);
