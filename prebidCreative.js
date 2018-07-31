@@ -296,13 +296,22 @@ function responseCallback(isMobileApp) {
  * @param {string} cacheId 
  */
 function loadFromLocalCache(cacheId) {
-  var bid = localStorage.getItem(cacheId);
-   admob.events.dispatchAppEvent("testAntoine", cacheId);
-   admob.events.dispatchAppEvent("testAntoine", bid);
-   admob.events.dispatchAppEvent("testAntoine", "bidretrain");
+  try {
+      var bid = localStorage.getItem(cacheId);
+      var bidObj2 = JSON.parse(bid);            
+      admob.events.dispatchAppEvent("testAntoineCache", cacheId);
+      admob.events.dispatchAppEvent("testAntoine", bid);
+      admob.events.dispatchAppEvent("testAntoine", bidObj2);
+  } catch (n) {
+      admob.events.dispatchAppEvent("testAntoine", "notWorking");
+      admob.events.dispatchAppEvent("testAntoine", n.message);
+      return void u.logError("Issue parsing bid from localStorage :" + n.message)
+  }
+  admob.events.dispatchAppEvent("testAntoine", "testFinish");
   var displayFn = responseCallback(true);
   displayFn(bid);
 }
+
 
 /**
  * Parse response
