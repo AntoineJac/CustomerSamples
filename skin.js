@@ -32,12 +32,11 @@ pbjs.que = pbjs.que || [];
 var googletag = googletag || {};
 googletag.cmd = googletag.cmd || [];
 pbjs.adserverRequestSent = false
-
+var slot1;
 googletag.cmd.push(function() {
+         slot1 = googletag.defineSlot('/4362169/Ad_test', [300,250], 'testAntoine').addService(googletag.pubads());
          googletag.pubads().disableInitialLoad();
-         googletag.defineSlot('/4362169/Ad_test', [300,250], 'testAntoine').addService(googletag.pubads());
          googletag.pubads().enableSingleRequest();
-         googletag.pubads().collapseEmptyDivs();
          googletag.enableServices();
 });
 
@@ -47,7 +46,7 @@ function sendAdserverRequest() {
     googletag.cmd.push(function() {
         pbjs.que.push(function() {
             pbjs.setTargetingForGPTAsync();
-            googletag.pubads().refresh();
+            googletag.pubads().refresh([slot1]);
         });
     });
 }         
