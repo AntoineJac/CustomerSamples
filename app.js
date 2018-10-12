@@ -1091,7 +1091,7 @@ System.register("services/AdManager", ["models/DfpAd", "services/Generator", "se
                     var callDFP = function () {
                         window.googletag.cmd.push(function () {
                             window.pbjs.que.push(function () {
-                                window.pbjs.setTargetingForGPTAsync([ad.slot]);
+                                window.pbjs.setTargetingForGPTAsyncCopy([ad.slot.getSlotElementId()]);
                                 window.googletag.pubads().refresh([ad.slot], { changeCorrelator: false });
                             });
                         });
@@ -1147,6 +1147,7 @@ System.register("services/AdManager", ["models/DfpAd", "services/Generator", "se
                     window.pbjs.initialRequestSent = true;
                     window.googletag.cmd.push(function () {
                         window.pbjs.que.push(function () {
+                            window.pbjs.setTargetingForGPTAsyncCopy(initialLoadAds.map(function(d) {return d.getSlotElementId()}));
                             window.googletag.pubads().refresh(initialLoadAds);
                         });
                     });
