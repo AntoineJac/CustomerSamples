@@ -1125,8 +1125,7 @@ System.register("services/AdManager", ["models/DfpAd", "services/Generator", "se
                                 callback: _this.loadATFAds,
                                 gptSlotObjects: prebidAdsSlot,
                                 data: {
-                                    visitor: {},
-                                    inventory: {}
+                                    segmentType: {"key":"value"}
                                 }
                             });
                         });
