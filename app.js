@@ -1119,13 +1119,13 @@ System.register("services/AdManager", ["models/DfpAd", "services/Generator", "se
                         });
                         var prebidAdsSlot = prebidAds.map(function (ad) { return ad.slot; });
                         window.googletag.pubads().refresh(nonPrebidAdsSlot);    
-                        window.pbjs.que.push(function () {
-                            window.pbjs.rp.addAdUnits();                        
+                        window.pbjs.que.push(function () {                      
                             window.pbjs.rp.requestBids({
                                 callback: _this.loadATFAds,
                                 gptSlotObjects: prebidAdsSlot,
                                 data: {
-                                    segmentType: { "key" : "value" }
+                                    segmentType: { "key" : "value" },
+                                    segmentType2: { "key2" : "value2" }
                                 }
                             });
                         });
