@@ -921,6 +921,7 @@ System.register("services/AdManager", ["models/DfpAd", "services/Generator", "se
                     var _this = this;
                     this.bootstrap();
                     var position = 1;
+                    var prebid = prebid || 1;
                     var $items = $('[data-position]');
                     if ($items.length) {
                         var positions = $items
@@ -1082,7 +1083,6 @@ System.register("services/AdManager", ["models/DfpAd", "services/Generator", "se
                 AdManager.prototype.loadAd = function (dfpAds) {
                     var _this = this;
                     var prebidTimeout2 = this.options.PREBID_TIMEOUT;
- 
                     window.googletag.cmd.push(function () {
                        if (dfpAds.prebid !== 1) { 
                             window.googletag.pubads().refresh([dfpAds.slot]); 
@@ -1124,13 +1124,6 @@ System.register("services/AdManager", ["models/DfpAd", "services/Generator", "se
                     });
                     window.googletag.cmd.push(function () {
                         var nonPrebidAdsSlot = nonPrebidAds.map(function (ad) { return ad.slot; });
-                        /*
-                        prebidAds.forEach(function (c) {
-                            if (c.delayLoad === true) {
-                                c.slot.delayLoad = true
-                            }
-                        });
-                        */
                         var prebidAdsSlot = prebidAds.map(function (ad) { return ad.slot; });
                         window.googletag.pubads().refresh(nonPrebidAdsSlot);    
                         window.pbjs.que.push(function () {                     
@@ -1150,14 +1143,6 @@ System.register("services/AdManager", ["models/DfpAd", "services/Generator", "se
                 AdManager.prototype.loadATFAds = function (prebidAdsSlot) {
                     if (window.pbjs.initialRequestSent)
                         return;
-                    //var evt = document.createEvent("Event");
-                    //evt.initEvent("initialRequestSent",true,true);
-                    //document.dispatchEvent(evt);
-                    /*
-                    var initialLoadAds = prebidAdsSlot.filter(function(c){
-                        return c.delayLoad !== true;
-                    });
-                    */
                     window.pbjs.initialRequestSent = true;
                     window.googletag.cmd.push(function () {
                         window.pbjs.que.push(function () {
@@ -1215,7 +1200,7 @@ System.register("services/AdManager", ["models/DfpAd", "services/Generator", "se
                         var delayLoad = ($ad.attr('id') !== 'ad-header');
                         var dfpAd = new DfpAd_1.DfpAd(delayLoad);
                         dfpAd.id = $ad.attr('id');
-                        dfpAd.prebid = (typeof ($ad.data('prebid')) !== 'undefined' ? $ad.data('prebid') : 0);
+                        dfpAd.prebid = (typeof ($ad.data('prebid')) !== 'undefined' ? $ad.data('prebid') : 1);
                         if (self.adMatchesBreakpoints($ad) === false) {
                             return;
                         }
