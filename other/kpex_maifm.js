@@ -52,8 +52,6 @@
     /**
      * Define prebid variable
      */
-    var pbjs = pbjs || {};
-    pbjs.que = pbjs.que || [];
     var headerBiddingSlots = [];
     var nonHeaderBiddingSlots = [];
 
@@ -129,7 +127,7 @@
      * @returns {boolean} true if the page is set to enable Prebid
      */
     function isPrebidEnable() {
-        return getMetatag('prebid');
+        return true;
     }    
     
     /**
@@ -200,7 +198,7 @@
         var
             adType = element.getAttribute('data-advertisement'),
             elementId = element.getAttribute('id'),
-            activePrebid = element.getAttribute('prebid')
+            activePrebid = true
         ;
         
 
@@ -209,7 +207,7 @@
         var activeSize = getRequiredAdSizes(getAdSizes(), adType);
 
         if (activePrebid) {
-            prebidSizeMapping.elementId = definePrebidSizeMapping(getPrebidSizeMapping(), adType);
+            prebidSizeMapping[elementId] = definePrebidSizeMapping(getPrebidSizeMapping(), adType);
         }
 
         log("AdType: ", adType);
@@ -271,15 +269,13 @@
      * The callback function called by Prebid to display ads 
      */
     function sendAdServerRequest(headerBiddingSlots) {
-        googletag.cmd.push(function() {
-            if (pbjs.adserverRequestSent) {
-                return;
-            }
-            pbjs.adserverRequestSent = true;
-            pbjs.que.push(function() {
-                pbjs.setTargetingForGPTAsync();
-                googletag.pubads().refresh(headerBiddingSlots);
-            });
+        if (pbjs.adserverRequestSent) {
+            return;
+        }
+        pbjs.adserverRequestSent = true;
+        pbjs.que.push(function() {
+            pbjs.setTargetingForGPTAsync();
+            googletag.pubads().refresh(headerBiddingSlots);
         });
     }
 
@@ -287,15 +283,13 @@
      * The callback function called by Prebid to display ads 
      */
     function refreshAdServerRequest(prebidSlot) {
-        googletag.cmd.push(function() {
-            if (pbjs.prebidSlot[0].getSlotElementId()) {
-                return;
-            }
-            pbjs.prebidSlot[0].getSlotElementId() = true;
-            pbjs.que.push(function() {
-                pbjs.setTargetingForGPTAsync();
-                googletag.pubads().refresh(prebidSlot);
-            });
+        if (pbjs.prebidSlot[0].getSlotElementId()) {
+            return;
+        }
+        pbjs.prebidSlot[0].getSlotElementId() = true;
+        pbjs.que.push(function() {
+            pbjs.setTargetingForGPTAsync();
+            googletag.pubads().refresh(prebidSlot);
         });
     }    
 
@@ -365,7 +359,7 @@
      */
     function refreshPrebid(slot) {
         // Convert slot in array
-        slot = slot ? [slot]
+        slot = slot ? [slot] : [];
 
         pbjs.slot[0].getSlotElementId() = false;
 
@@ -583,9 +577,7 @@
             if (slots[id]) {
                 hideCollapsibleContainerInNonEditMode($('#' + id));
             }
-        });
-
-        googletag.enableServices();
+        });        
 
         // 1. Disable load is Prebid is activated
         if (isPrebidEnable()) {
@@ -593,6 +585,7 @@
             initialisePrebid();
         }
 
+        googletag.enableServices();
         displayRegisteredAds();
 
         // Refresh directly non prebid ad slot
