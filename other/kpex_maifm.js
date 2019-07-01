@@ -127,7 +127,7 @@
      * @returns {boolean} true if the page is set to enable Prebid
      */
     function isPrebidEnable() {
-        return true;
+        return getMetatag('prebid');
     }    
     
     /**
@@ -198,7 +198,7 @@
         var
             adType = element.getAttribute('data-advertisement'),
             elementId = element.getAttribute('id'),
-            activePrebid = true
+            activePrebid = element.getAttribute('prebid')
         ;
         
 
@@ -373,7 +373,7 @@
 
         // Failsafe timeout which is DM timeout (2000ms) + 500ms
         setTimeout(function() {
-            sendAdServerRequest(slot);
+            refreshAdServerRequest(slot);
         }, 2500);        
     }    
 
