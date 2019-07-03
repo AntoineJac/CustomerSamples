@@ -105,9 +105,19 @@ googletag.cmd.push(function() {
   }
 
   // Define which slot to monetise via Prebid 
-  headerBiddingSlots.push(slotBillboard_1, slotBillboard_2, slotBillboard_3, slotBillboard_4);
+  var url_pathname = window.location.pathname;
+
+  // Default for all pages && Sections
+  headerBiddingSlots.push(slotBillboard_1);
   headerBiddingSlots.push(slotMred_1, slotMred_2);
-  headerBiddingSlots.push(slotLeadMrec_1);
+
+  if (url_pathname == "/" || url_pathname == "" ) {
+    // Homepage
+    headerBiddingSlots.push(slotBillboard_2, slotBillboard_3, slotBillboard_4);
+  } else if (isNaN(url_pathname.split("/")[2]) == false ) {
+    // Articles
+    headerBiddingSlots.push(slotLeadMrec_1);    
+  }
 
   // Request the bids
   pbjs.rp.requestBids({
@@ -148,5 +158,3 @@ setTimeout(function() {
   sendAdServerRequest(headerBiddingSlots);
 }, 2500);
 /* End of the Prebid Code - Send adserver request function */
-
-
