@@ -340,6 +340,14 @@
      * data is an object to pass segments you want to send to bidders 
      */
     function initialisePrebid() {
+
+        var deviceMappingFunction = function(myObj) {
+            var slotDevice = myObj.adUnitPattern.customMappingParams.deviceType;
+            var gptDevice = googletag.pubads().getTargeting('deviceType')[0];
+            return (gptDevice === slotDevice)
+        };
+        pbjs.rp.setCustomMappingFunction(deviceMappingFunction);
+
         // Request the bids
         pbjs.rp.requestBids({
             callback: sendAdServerRequest,
@@ -515,6 +523,24 @@
             googletag.display(displayAds[idx]);
         }
     }
+
+    /**
+     * Use the user agent to pass the device type to DFP
+     */
+    function deviceTypeTargeting() {
+        if( navigator.userAgent.match(/Android/i)
+            || navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgent.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i)
+        ) {
+            googletag.pubads().setTargeting('deviceType', 'mobile');
+        } else {
+            googletag.pubads().setTargeting('deviceType', 'desktop');
+        }
+    }    
     
     /**
      * This is tricky. Ad contains wrap in data-fn='collapse' containers needed to be hidden if the ad is empty in some scenarios,
@@ -548,6 +574,9 @@
 
         // run the base code to enable the services
         initialiseGoogleAds();
+
+        // Pass the device type to google, will be also used for the prebid mapping
+        deviceTypeTargeting();
 
         // 1. Enable for production to improve performance
         // 2/ Used to hide ads that aren't being loaded e.g billboards
