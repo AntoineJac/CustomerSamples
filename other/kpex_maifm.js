@@ -54,6 +54,8 @@
      */
     var headerBiddingSlots = [];
     var nonHeaderBiddingSlots = [];
+    // For MaiFM and MoreFM = Entertainment
+    var verticalOutput = "entertainment"; 
 
     function getAdSizes() {
         // Note, for some reason GPT returns 400 error if [0, 0] size is in the request.
@@ -353,7 +355,10 @@
             callback: sendAdServerRequest,
             gptSlotObjects: headerBiddingSlots,
             sizeMappings:  prebidSizeMapping,
-            data: {}
+            data: {
+              vertical: verticalOutput,
+              prebid: "true"
+            }
         });        
 
         // Failsafe timeout which is DM timeout (2000ms) + 500ms
@@ -376,7 +381,10 @@
             callback: refreshAdServerRequest,
             gptSlotObjects: slot,
             sizeMappings:  prebidSizeMapping,
-            data: {}
+            data: {
+              vertical: verticalOutput,
+              prebid: "true"
+            }
         });        
 
         // Failsafe timeout which is DM timeout (2000ms) + 500ms
