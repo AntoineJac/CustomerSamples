@@ -1,55 +1,18 @@
 from server import services
 services.connectToNetwork(XXXX)
 print "connected"
+orderIds = [XXXX]
+# placementIds = [28608740]
+# adunits = [780773]
 
-lineItemsIds = XXXX
-updated_line_items = []
-
-def getRootAdUnit():
-    statement = services.ad_manager.FilterStatement()
-    current_network = services.NetworkService.getCurrentNetwork()
-    if hasattr(current_network, 'effectiveRootAdUnitId'):
-        return current_network.effectiveRootAdUnitId
-    else:
-        return 0    
-
-def getAllOrders():
-    orderList = []
-    statement = services.ad_manager.FilterStatement()
-    while True:
-        response = services.OrderService.getOrdersByStatement(statement.ToStatement())
-        if 'results' in response and len(response['results']):
-            for order in response['results']:
-                orderList.append(order['id'])
-            statement.offset += services.ad_manager.SUGGESTED_PAGE_LIMIT
-        else:
-            break
-
-    return orderList
-        
-
-def getAdunits(ad_unitsCurrent):
-    ad_units = []
-    for adunit in ad_unitsCurrent:
-        if int(adunit['adUnitId']) == int(adunitsRON):
-            return ad_unitsCurrent
-
-        if int(adunit['adUnitId']) == int(parentAdUnit):
-            return ad_unitsCurrent    
-
-        ad_units.append({
-            'adUnitId': adunit['adUnitId'],
+def getAdunits():
+    result = []
+    for adunit in adunits:
+        result.append({
+            'adUnitId': adunit,
             'includeDescendants': 'true'
         })
-
-        for adunit in adunitsToAppend:
-            ad_units.append({
-                'adUnitId': adunit,
-                'includeDescendants': 'true'
-            })
-
-    return ad_units
-
+    return result
 
 def batchCreate(method, elements):
     counter = 0
@@ -69,90 +32,110 @@ def batchCreate(method, elements):
     return result
 
 def update():
-    query = ("WHERE Id="+str(lineItemsIds))
-    statement = services.ad_manager.FilterStatement(query)
-    while True:
-        print 'testAntoine'
-        response = services.LineItemService.getLineItemsByStatement(statement.ToStatement())
+    for order in orderIds:
+        query = ("WHERE orderId="+str(order))
+        statement = services.dfp.FilterStatement(query)
+        statement2 = services.dfp.FilterStatement()
+        while True:
+            response = services.LineItemService.getLineItemsByStatement(statement.ToStatement())
+            customFieldValues= services.CustomFieldService.getCustomFieldsByStatement(statement2.ToStatement())
+            updated_line_items = []
+            line_items = []
+            if 'results' in response:
+                # print "Read "+str(len(response["results"]))
+                for line_item in response["results"]:
+                    #print "customFiel Id is" + test[id]
+                    #print "customFiel Name is" + test[id]
+                    drop_down_custom_field_value = {
+                        'customFieldId': XXXX,
+                        'xsi_type': 'DropDownCustomFieldValue',
+                        'customFieldOptionId': XXXX,
+                    }
 
-        line_items = []
-        if 'results' in response and len(response['results']):
-            for line_item in response["results"]:
-                if not line_item['isArchived']:
-                    #ad_units = getAdunits(line_item['targeting']['inventoryTargeting']['targetedAdUnits'])
-                    #line_item['allowOverbook'] = True
-                    #line_item['skipInventoryCheck'] = True
-                    line_item['creativeTargetings'] = [
-                        {   
-                            'name': 'testRubTarg', 
-                            'targeting': {
-                                'customTargeting': { 
-                                    'xsi_type': 'CustomCriteriaSet',
-                                    'logicalOperator': 'OR',
-                                    'children': [ 
-                                        {
-                                            'xsi_type': 'CustomCriteriaSet',
-                                            'logicalOperator': 'AND',
-                                            'children': [ 
-                                                {
-                                                    'xsi_type': 'CustomCriteria',
-                                                    'keyId': XXXX,
-                                                    'valueIds': [
-                                                        XXXX
-                                                    ],
-                                                    'operator': 'IS' 
-                                                } 
-                                            ] 
-                                        } 
-                                    ] 
-                                }
-                            }
-                        } 
-                    ]
-                    line_item['creativePlaceholders'] = [ { 'size': { 'width': 728L, 'height': 90L, 'isAspectRatio': False }, 'creativeTemplateId': None, 'companions': [], 'appliedLabels': [], 'effectiveAppliedLabels': [], 'expectedCreativeCount': 1L, 'creativeSizeType': 'PIXEL', 'targetingName': 'testRubTarg', 'isAmpOnly': False }, { 'size': { 'width': 300L, 'height': 250L, 'isAspectRatio': False }, 'creativeTemplateId': None, 'companions': [], 'appliedLabels': [], 'effectiveAppliedLabels': [], 'expectedCreativeCount': 1L, 'creativeSizeType': 'PIXEL', 'targetingName': 'testRubTarg', 'isAmpOnly': False }, { 'size': { 'width': 300L, 'height': 600L, 'isAspectRatio': False }, 'creativeTemplateId': None, 'companions': [], 'appliedLabels': [], 'effectiveAppliedLabels': [], 'expectedCreativeCount': 1L, 'creativeSizeType': 'PIXEL', 'targetingName': None, 'isAmpOnly': False } ]
-
+                    custom_field_values = [drop_down_custom_field_value]
+                    line_item['customFieldValues'] = custom_field_values
+                    # line_item['costPerUnit']['currencyCode'] = 'USD'
+                    # print line_item
                     updated_line_items.append(line_item)
-                    
                     continue
+                         
+                    # line_item['targeting']['inventoryTargeting']['targetedAdUnits'] = getAdunits()
 
-            if (len(updated_line_items) > 0):
-                line_items = batchCreate(services.LineItemService.updateLineItems, updated_line_items)
-            if (len(line_items) > 0):
-                print "Update "+str(len(line_items))
+                    # line_item['targeting']['inventoryTargeting'] = {
+                    #     'targetedPlacementIds': placementIds
+                    # }
+
+                    # children = line_item['targeting']['customTargeting']['children'][0]['children']
+                    # for index, child in enumerate(children):  
+                    #     if (child['keyId'] == 159886):
+                    #         del children[index]
+
+                
+                    
+                    
+                    
+
+                    #customFieldValues[] = { customFieldId = 1263826 value = { dataType = "DROP_DOWN" value = "Option1" } xsi_type = "CustomFieldValue" }
+                    #line_item['customFieldValues'] == custom_field_values
+                     #['targetedPlacementIds'].append(4084125)
+
+#line_item.results[0]['customFieldValues'] = custom_field_values
+
+                    # print line_item['targeting']['customTargeting']
+                    # print line_item['targeting']['customTargeting']['children'][0]
+                    # key = line_item['targeting']['customTargeting']['children'][0]['children'][0]['keyId']
+                    # values = line_item['targeting']['customTargeting']['children'][0]['children'][0]['valueIds']
+
+                    # line_item['targeting']['customTargeting'] = {
+                    #     'xsi_type': 'CustomCriteriaSet',
+                    #     'logicalOperator': 'AND',
+                    #     'children': [{
+                    #         'xsi_type': 'CustomCriteria',
+                    #         'operator': 'IS',
+                    #         'keyId': key,
+                    #         'valueIds': values, 
+                    #     },{
+                    #         'xsi_type': 'CustomCriteria',
+                    #         'operator': 'IS_NOT',
+                    #         'keyId': 10737907,
+                    #         'valueIds': [447863213241], 
+                    #     }],
+                    # }
+            
+                    # line_item['targeting']['customTargeting']['children'].append({
+                    #     'xsi_type': 'CustomCriteriaSet',
+                    #     'logicalOperator': 'AND',
+                    #     'children': [{
+                    #         'xsi_type': 'CustomCriteria',
+                    #         'operator': 'IS_NOT',
+                    #         'keyId': 10737907,
+                    #         'valueIds': [447863213241], 
+                    #     }],
+                    # })
+
+                    # line_item['targeting']['customTargeting']['children'].append(('CustomCriteriaSet'){
+                    #     'logicalOperator': 'AND',
+                    #     'children': [('CustomCriteria'){
+                    #         'operator': 'IS_NOT',
+                    #         'keyId': 10737907,
+                    #         'valueIds': [447863213241], 
+                    #     }],
+                    # })
+                    
+                    
+                    # break
+
+                    
+                if (len(updated_line_items) > 0):
+                    line_items = batchCreate(services.LineItemService.updateLineItems, updated_line_items)
+                if (len(line_items) > 0):
+                    print "Update "+str(len(line_items))
+                else:
+                    print 'No line items were updated.'
+                statement.offset += services.dfp.SUGGESTED_PAGE_LIMIT
+                # break
             else:
-                print 'No line items were updated.'
+                break
+        print "order: "+str(order)+" finished"
 
-            statement.offset += services.ad_manager.SUGGESTED_PAGE_LIMIT
-            # break
-        else:
-            break
-    print "the line items have been updated"
-    association(updated_line_items)
-
-def association(line_item):  
-
-    print "creativeAssociation"
-    #print image_creative2
-     # Build the new creative, set id to None to create a copy.
-    licasOld = []
-    for li in line_item:
-        newSizesArray = []
-        query = ("WHERE lineItemId="+str(li['id']))
-        statement = services.ad_manager.FilterStatement(query)
-        response2 = services.LineItemCreativeAssociationService.getLineItemCreativeAssociationsByStatement(statement.ToStatement())
-        for lica2 in response2['results']:
-        	if (lica2['creativeId'] == XXXX):
-        		print lica2
-        		#lica2['targetingName'] = 'testRubTarg'
-        		#licasOld.append(lica2)
-
-  # send licas to dfp service
-    #licasOld = batchCreate(services.LineItemCreativeAssociationService.updateLineItemCreativeAssociations, licasOld)
-    if (len(licasOld) > 0):
-        print "Update "+str(len(licasOld))
-    else:
-        print 'No association'
-
-#orderIds = getAllOrders()
-#adunitsRON = getRootAdUnit()
 update()
