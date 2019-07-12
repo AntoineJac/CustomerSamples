@@ -1,8 +1,8 @@
 from server import services
-services.connectToNetwork(4362169)
+services.connectToNetwork(XXXX)
 print "connected"
 
-lineItemsIds = 5001013659
+lineItemsIds = XXXX
 updated_line_items = []
 
 def getRootAdUnit():
