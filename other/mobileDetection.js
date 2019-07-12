@@ -12,15 +12,13 @@
         navigator.userAgent.match(/BlackBerry/i) ||
         navigator.userAgent.match(/Windows Phone/i)
     ) {
-        (function() {
-            gads.src = (useSSL ? 'https:' : 'http:') +
-'//ads.rubiconproject.com/prebid/11964_general_mobile_test.js';
-        })();
+        gads.src = (useSSL ? 'https:' : 'http:') +
+        '//ads.rubiconproject.com/prebid/11964_general_mobile_test.js';
     } else {
-        (function() {
-            gads.src = (useSSL ? 'https:' : 'http:') + '//ads.rubiconproject.com/prebid/11964_test.js';
-        })();
+        gads.src = (useSSL ? 'https:' : 'http:') +
+        '//ads.rubiconproject.com/prebid/11964_test.js';
     }
+    
     var node = document.getElementsByTagName('script')[0];
     node.parentNode.insertBefore(gads, node);
 }());
