@@ -52,12 +52,6 @@ def update():
                     custom_field_values = [drop_down_custom_field_value]
                     line_item['customFieldValues'] = custom_field_values
                     
-                    # to add or update the inventory or adUnit targeting                        
-                    line_item['allowOverbook'] = True
-                    line_item['skipInventoryCheck'] = True
-                    line_item['targeting']['inventoryTargeting']['targetedAdUnits'] = []
-                    line_item['targeting']['inventoryTargeting']['targetedPlacementIds'] = [29480009]
-                    
                     # line_item['costPerUnit']['currencyCode'] = 'USD'
                     
                     # print line_item
