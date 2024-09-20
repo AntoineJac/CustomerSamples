@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/2005/xpath-functions" xmlns:ax262="http://identite.response.callisto.newsys.altares.fr/xsd" xmlns:ax263="http://response.callisto.newsys.altares.fr/xsd" xmlns:ax264="http://vo.callisto.newsys.altares.fr/xsd" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:ns="http://serviceobject.service.callisto.newsys.altares.fr" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" version="2.0" xpath-default-namespace="http://tempuri.org/" exclude-result-prefixes="fn">
+   <xsl:mode on-no-match="shallow-skip" />
+   <xsl:output method="text" />
+   <xsl:template match="/soap:Envelope/soap:Body/ns:getIdentiteAltaN4EtablissementResponse/ns:return">
+      <xsl:variable name="json-result">
+         <map>
+            <!-- Convert the 'correct' field -->
+            <boolean key="correct">
+               <xsl:value-of select="ax263:correct" />
+            </boolean>
+            <!-- Convert the 'parametres' field -->
+            <map key="parametres">
+               <string key="refClient">
+                  <xsl:value-of select="ax263:parametres/ax264:parametre[ax264:nom='refClient']/ax264:valeur" />
+               </string>
+               <string key="sirenSiret">
+                  <xsl:value-of select="ax263:parametres/ax264:parametre[ax264:nom='sirenSiret']/ax264:valeur" />
+               </string>
+            </map>
+            <!-- Convert the 'myInfo' field -->
+            <map key="myInfo">
+               <string key="antoineTest">
+                  <xsl:value-of select="ax262:myInfo/ax264:telephone" />
+               </string>
+               <string key="raisonSociale">
+                  <xsl:value-of select="ax262:myInfo/ax264:raisonSociale" />
+               </string>
+               <string key="siret">
+                  <xsl:value-of select="ax262:myInfo/ax264:siret" />
+               </string>
+               <string key="conventionCollective">
+                  <xsl:value-of select="ax262:myInfo/ax264:conventionCollective" />
+               </string>
+               <string key="duns">
+                  <xsl:value-of select="ax262:myInfo/ax264:duns" />
+               </string>
+               <boolean key="siege">
+                  <xsl:value-of select="ax262:myInfo/ax264:siege" />
+               </boolean>
+               <boolean key="actif">
+                  <xsl:value-of select="ax262:myInfo/ax264:actif" />
+               </boolean>
+               <!-- Convert the 'identiteDigitale' field -->
+               <map key="identiteDigitale">
+                  <string key="sitePrincipal">
+                     <xsl:value-of select="ax262:myInfo/ax264:identiteDigitale/ax264:sitePrincipal" />
+                  </string>
+                  <number key="nbReseauSocial">
+                     <xsl:value-of select="ax262:myInfo/ax264:identiteDigitale/ax264:nbReseauSocial" />
+                  </number>
+                  <number key="nbSiteSecondaire">
+                     <xsl:value-of select="ax262:myInfo/ax264:identiteDigitale/ax264:nbSiteSecondaire" />
+                  </number>
+               </map>
+               <boolean key="nonDiffusible">
+                  <xsl:value-of select="ax262:myInfo/ax264:nonDiffusible" />
+               </boolean>
+               <string key="rcs">
+                  <xsl:value-of select="ax262:myInfo/ax264:rcs" />
+               </string>
+            </map>
+         </map>
+      </xsl:variable>
+      <xsl:value-of select="fn:xml-to-json($json-result)" />
+   </xsl:template>
+</xsl:stylesheet>
