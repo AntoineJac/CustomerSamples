@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fn="http://www.w3.org/2005/xpath-functions" version="2.0" xpath-default-namespace="http://www.w3.org/2005/xpath-functions" exclude-result-prefixes="fn">
+   <xsl:output method="xml" indent="yes" />
+   <xsl:template name="main">
+      <xsl:param name="request-body" required="yes" />
+      <xsl:variable name="json" select="fn:json-to-xml($request-body)" />
+      <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://serviceobject.service.callisto.newsys.altares.fr" xmlns:xsd="http://request.callisto.newsys.altares.fr/xsd">
+         <soap:Body>
+            <ser:getIdentiteAltaN4Etablissement>
+               <ser:request>
+                  <xsd:identification>
+                     <xsl:value-of select="$json/map/string[@key='identification']" />
+                  </xsd:identification>
+                  <xsd:refClient>
+                     <xsl:value-of select="$json/map/string[@key='refClient']" />
+                  </xsd:refClient>
+                  <xsd:sirenSiret>
+                     <xsl:value-of select="$json/map/string[@key='sirenSiret']" />
+                  </xsd:sirenSiret>
+               </ser:request>
+            </ser:getIdentiteAltaN4Etablissement>
+         </soap:Body>
+      </soap:Envelope>
+   </xsl:template>
+</xsl:stylesheet>
