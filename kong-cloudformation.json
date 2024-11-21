@@ -1,0 +1,608 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Launches the Kong Runtime instances in your AWS Account",
+    "Metadata": {
+        "AWS::CloudFormation::Interface": {
+            "ParameterGroups": [
+                {
+                    "Label": { "default": "Kong Configuration" },
+                    "Parameters": [ "Version", "ClusterControlPlane", "ClusterTelemetryEndpoint", "ClusterCertificate", "ClusterCertificateKey" ]
+                },
+                {
+                    "Label": { "default":"Infrastructure Configuration" },
+                    "Parameters": [ "InstanceType", "CreateRedisCluster", "EnableLogCollection" ]
+                },
+                {
+                    "Label": { "default":"Network Configuration" },
+                    "Parameters": [ "VpcId", "SubnetIds" ]
+                }
+            ]
+        }
+    },
+    "Parameters": {
+        "Version": {
+            "Type": "String",
+            "Default": "3.5.0.0",
+            "Description": "The Version of Kong Gateway to use",
+            "ConstraintDescription": "Must be a valid Kong Gateway version"
+        },
+        "ClusterControlPlane": {
+            "Type": "String",
+            "Description": "The Cluster Control Plane from the Kong Cloud console",
+            "ConstraintDescription": "Must be a valid Cluster Control Plane endpoint"
+        },
+        "ClusterTelemetryEndpoint": {
+            "Type": "String",
+            "Description": "The Cluster Telemetry Endpoint from the Kong Cloud console",
+            "ConstraintDescription": "Must be a valid Cluster Telemetry endpoint"
+        },
+        "ClusterCertificate": {
+            "Type": "String",
+            "Description": "The Cluster Certificate (BASE64 Encoded)",
+            "ConstraintDescription": "Must be a valid Cluster Certificate"
+        },
+        "ClusterCertificateKey": {
+            "Type": "String",
+            "Description": "The Cluster Certificate key (BASE64 Encoded)",
+            "ConstraintDescription": "Must be a valid Cluster Certificate Key"
+        },
+
+        "InstanceType": {
+            "Type": "String",
+            "Default": "t3a.small",
+            "Description": "Instance type for the Kong Runtime Instances",
+            "ConstraintDescription": "Must be a valid x86_64 EC2 instance type"
+        },
+        "CreateRedisCluster": {
+            "Type": "String",
+            "Default": "No",
+            "AllowedValues": [ "Yes", "No" ],
+            "Description": "Select \"Yes\" to create an Elasticache Cluster, \"No\" to skip (default).",
+            "ConstraintDescription": "Select Yes to create an Elasticache Cluster"
+        },
+        "EnableLogCollection": {
+            "Type": "String",
+            "Default": "No",
+            "AllowedValues": [ "Yes", "No" ],
+            "Description": "Select \"Yes\" to setup Cloud Watch Logs, \"No\" to skip (default).",
+            "ConstraintDescription": "Select Yes to setup Cloud Watch Logs"
+        },
+
+        "VpcId": {
+            "Type": "String",
+            "Default": "",
+            "Description": "[Optional] Existing VPC ID; Enter if you don't want to create a new VPC"
+        },
+        "SubnetIds": {
+            "Type": "CommaDelimitedList",
+            "Default": "",
+            "Description": "[Optional] Comma separated list of Subnet IDs; Enter if you don't want to create a new Subnet"
+        }
+    },
+    "Mappings": {},
+    "Conditions": {
+        "ShouldCreateRedisCluster": {"Fn::Equals": [{"Ref": "CreateRedisCluster"}, "Yes"]},
+        "ShouldEnableLogCollection": {"Fn::Equals": [{"Ref": "EnableLogCollection"}, "Yes"]},
+        "ShouldCreateVPC": {"Fn::Equals": [{"Ref": "VpcId"}, ""]}
+    },
+    "Resources": {
+        "KeyPair": {
+            "Type": "AWS::EC2::KeyPair",
+            "Properties": {
+                "KeyName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                          "konnect",
+                          {
+                            "Fn::Select": [
+                              4,
+                              {
+                                "Fn::Split": [
+                                  "-",
+                                  {
+                                    "Fn::Select": [
+                                      2,
+                                      {
+                                        "Fn::Split": [
+                                          "/",
+                                          {
+                                            "Ref": "AWS::StackId"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      ]
+                }
+            }
+        },
+        "Secret": {
+            "Type": "AWS::SecretsManager::Secret",
+            "Properties": {
+                "SecretString": {
+                    "Fn::Sub": [
+                        "{\"cluster_certificate\":\"${cluster_certificate}\", \"cluster_certificate_key\":\"${cluster_certificate_key}\"}",
+                        {
+                            "cluster_certificate": {"Ref": "ClusterCertificate"},
+                            "cluster_certificate_key": {"Ref": "ClusterCertificateKey"}
+                        }
+                    ]
+                }
+            }
+        },
+
+        "InstanceRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": ["sts:AssumeRole"],
+                            "Principal": {
+                                "Service": ["ec2.amazonaws.com"]
+                            }
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "SecretsManagerAccess",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": "secretsmanager:GetSecretValue",
+                                    "Resource": {"Ref": "Secret"}
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "ManagedPolicyArns": {
+                    "Fn::If": [
+                        "ShouldEnableLogCollection",
+                        ["arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"],
+                        {"Ref": "AWS::NoValue"}
+                    ]
+                }
+            }
+        },
+        "InstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Roles": [
+                    {"Ref": "InstanceRole"}
+                ]
+            }
+        },
+        "InstanceSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Security Group attached to all the Kong Compute Instances",
+                "SecurityGroupIngress": [
+                    { "IpProtocol": "tcp", "FromPort": "8000", "ToPort": "8000", "CidrIp": "0.0.0.0/0" },
+                    { "IpProtocol": "tcp", "FromPort": "8443", "ToPort": "8443", "CidrIp": "0.0.0.0/0" },
+                    { "IpProtocol": "tcp", "FromPort": "22",   "ToPort": "22",   "CidrIp": "0.0.0.0/0" }
+                ],
+                "VpcId": {
+                    "Fn::If": [
+                        "ShouldCreateVPC",
+                        {"Ref": "Vpc"},
+                        {"Ref": "VpcId"}
+                    ]
+                }
+            }
+        },
+        "LaunchTemplate": {
+            "Type": "AWS::EC2::LaunchTemplate",
+            "Properties": {
+                "LaunchTemplateData": {
+                    "ImageId": "{{resolve:ssm:/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64}}",
+                    "InstanceType": {"Ref": "InstanceType"},
+                    "KeyName": {"Ref": "KeyPair"},
+                    "SecurityGroupIds": [{"Fn::GetAtt": ["InstanceSecurityGroup", "GroupId"]}],
+                    "UserData": {
+                        "Fn::Base64": {
+                            "Fn::Join": ["\n", [
+                                "#!/bin/bash -xe",
+                                "",
+                                { "Fn::Sub": "export RPM_VERSION=${Version}.aws.x86_64.rpm"  },
+                                { "Fn::Sub": "export CLUSTER_CONTROL_PLANE=${ClusterControlPlane}" },
+                                "export CLUSTER_SERVER_NAME=$(echo $CLUSTER_CONTROL_PLANE | cut -d: -f1)",
+                                { "Fn::Sub": "export CLUSTER_TELEMETRY_ENDPOINT=${ClusterTelemetryEndpoint}" },
+                                "export CLUSTER_TELEMETRY_SERVER_NAME=$(echo $CLUSTER_TELEMETRY_ENDPOINT | cut -d: -f1)",
+                                { "Fn::Sub": "export SECRET=$(aws secretsmanager get-secret-value --secret-id ${Secret} --region ${AWS::Region} --query SecretString --output text)" },
+                                "",
+                                "export KONG_CONFIG_PATH=/etc/kong/kong.conf",
+                                "export CLUSTER_CERT_PATH=/etc/kong/cluster_cert.crt",
+                                "export CLUSTER_CERT_KEY_PATH=/etc/kong/cluster_cert_key.key",
+                                "",
+                                "curl -Lo kong-enterprise-edition-$RPM_VERSION $(rpm --eval https://packages.konghq.com/public/gateway-${RPM_VERSION:0:1}${RPM_VERSION:2:1}/rpm/amzn/%{amzn}/x86_64/kong-enterprise-edition-$RPM_VERSION)",
+                                "yum install -y kong-enterprise-edition-$RPM_VERSION",
+                                "yum install -y jq",
+                                "",
+                                "echo $SECRET | jq -r .cluster_certificate | base64 -d > $CLUSTER_CERT_PATH",
+                                "echo $SECRET | jq -r .cluster_certificate_key | base64 -d > $CLUSTER_CERT_KEY_PATH",
+                                "",
+                                "cat > $KONG_CONFIG_PATH <<EOF",
+                                "role = data_plane",
+                                "database = off",
+                                "cluster_mtls = pki",
+                                "cluster_control_plane = $CLUSTER_CONTROL_PLANE",
+                                "cluster_server_name = $CLUSTER_SERVER_NAME",
+                                "cluster_telemetry_endpoint = $CLUSTER_TELEMETRY_ENDPOINT",
+                                "cluster_telemetry_server_name = $CLUSTER_TELEMETRY_SERVER_NAME",
+                                "cluster_cert = $CLUSTER_CERT_PATH",
+                                "cluster_cert_key = $CLUSTER_CERT_KEY_PATH",
+                                "lua_ssl_trusted_certificate = system",
+                                "EOF",
+                                "",
+                                "if [ ${RPM_VERSION:0:1} -eq 3 ] ",
+                                "then",
+                                "cat >> $KONG_CONFIG_PATH <<EOF",
+                                "konnect_mode = on",
+                                "vitals = off",
+                                "EOF",
+                                "fi",
+                                "",
+                                "mkdir -p /etc/systemd/system/kong-enterprise-edition.service.d",
+                                "cat > /etc/systemd/system/kong-enterprise-edition.service.d/user.conf <<EOF",
+                                "[Service]",
+                                "User=root",
+                                "EOF",
+                                "",
+                                "systemctl daemon-reload",
+                                "systemctl enable --now kong-enterprise-edition",
+                                "",
+                                {"Fn::If": ["ShouldEnableLogCollection", "", "exit 0"]},
+                                "yum install -y amazon-cloudwatch-agent",
+                                "",
+                                "cat > /opt/aws/amazon-cloudwatch-agent/bin/config.json <<EOF",
+                                "{",
+                                "  \"agent\": {",
+                                "    \"run_as_user\": \"root\"",
+                                "  },",
+                                "  \"logs\": {",
+                                "    \"logs_collected\": {",
+                                "      \"files\": {",
+                                "        \"collect_list\": [",
+                                "          {",
+                                "            \"file_path\": \"/usr/local/kong/logs/access.log\",",
+                                "            \"log_group_name\": \"kong/access.log\",",
+                                "            \"log_stream_name\": \"{instance_id}\",",
+                                "            \"retention_in_days\": -1",
+                                "          },",
+                                "          {",
+                                "            \"file_path\": \"/usr/local/kong/logs/error.log\",",
+                                "            \"log_group_name\": \"kong/error.log\",",
+                                "            \"log_stream_name\": \"{instance_id}\",",
+                                "            \"retention_in_days\": -1",
+                                "          },",
+                                "          {",
+                                "            \"file_path\": \"/usr/local/kong/logs/admin_access.log\",",
+                                "            \"log_group_name\": \"kong/admin_access.log\",",
+                                "            \"log_stream_name\": \"{instance_id}\",",
+                                "            \"retention_in_days\": -1",
+                                "          }",
+                                "        ]",
+                                "      }",
+                                "    }",
+                                "  }",
+                                "}",
+                                "EOF",
+                                "",
+                                "/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json",
+                                "/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a status",
+                                ""
+                            ]]
+                        }
+                    },
+                    "IamInstanceProfile": {
+                        "Name": {"Ref": "InstanceProfile"}
+                    }
+                }
+            }
+        },
+        "HttpTargetGroup": {
+            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties": {
+                "HealthCheckProtocol": "TCP",
+                "Port": "8000",
+                "Protocol": "TCP",
+                "VpcId": {
+                    "Fn::If": [
+                        "ShouldCreateVPC",
+                        {"Ref": "Vpc"},
+                        {"Ref": "VpcId"}
+                    ]
+                }
+            }
+        },
+        "HttpsTargetGroup": {
+            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties": {
+                "HealthCheckProtocol": "TCP",
+                "Port": "8443",
+                "Protocol": "TCP",
+                "VpcId": {
+                    "Fn::If": [
+                        "ShouldCreateVPC",
+                        {"Ref": "Vpc"},
+                        {"Ref": "VpcId"}
+                    ]
+                }
+            }
+        },
+        "AutoScalingGroup": {
+            "Type": "AWS::AutoScaling::AutoScalingGroup",
+            "Properties": {
+                "MinSize": "1",
+                "MaxSize": "16",
+                "DesiredCapacity": "1",
+                "HealthCheckGracePeriod": "300",
+                "HealthCheckType": "ELB",
+                "LaunchTemplate": {
+                    "LaunchTemplateId": {"Ref": "LaunchTemplate"},
+                    "Version": {"Fn::GetAtt": ["LaunchTemplate", "LatestVersionNumber"]}
+                },
+                "TargetGroupARNs": [
+                    {"Ref": "HttpTargetGroup"},
+                    {"Ref": "HttpsTargetGroup"}
+                ],
+                "VPCZoneIdentifier": {
+                    "Fn::If": [
+                        "ShouldCreateVPC",
+                        [
+                            {"Ref": "Subnet1"},
+                            {"Ref": "Subnet2"}
+                        ],
+                        {"Ref": "SubnetIds"}
+                    ]
+                }
+            }
+        },
+        "ScaleOutPolicy": {
+            "Type": "AWS::AutoScaling::ScalingPolicy",
+            "Properties": {
+                "AdjustmentType": "ChangeInCapacity",
+                "AutoScalingGroupName": {"Ref": "AutoScalingGroup"},
+                "PolicyType": "SimpleScaling",
+                "ScalingAdjustment": 1
+            }
+        },
+        "ScaleInPolicy": {
+            "Type": "AWS::AutoScaling::ScalingPolicy",
+            "Properties": {
+                "AdjustmentType": "ChangeInCapacity",
+                "AutoScalingGroupName": {"Ref": "AutoScalingGroup"},
+                "PolicyType": "SimpleScaling",
+                "ScalingAdjustment": -1
+            }
+        },
+        "ScaleOutAlarm": {
+            "Type": "AWS::CloudWatch::Alarm",
+            "Properties": {
+                "EvaluationPeriods": "2",
+                "Statistic": "Average",
+                "Threshold": "75",
+                "AlarmDescription": "Scale out if CPU > 75% for 10 minutes",
+                "Period": "300",
+                "AlarmActions": [{"Ref": "ScaleOutPolicy"}],
+                "Namespace": "AWS/EC2",
+                "Dimensions": [{
+                    "Name": "AutoScalingGroupName",
+                    "Value": {"Ref": "AutoScalingGroup"}
+                }],
+                "ComparisonOperator": "GreaterThanThreshold",
+                "MetricName": "CPUUtilization"
+            }
+        },
+        "ScaleInAlarm": {
+            "Type": "AWS::CloudWatch::Alarm",
+            "Properties": {
+                "EvaluationPeriods": "2",
+                "Statistic": "Average",
+                "Threshold": "25",
+                "AlarmDescription": "Scale in if CPU < 25% for 10 minutes",
+                "Period": "300",
+                "AlarmActions": [{"Ref": "ScaleInPolicy"}],
+                "Namespace": "AWS/EC2",
+                "Dimensions": [{
+                    "Name": "AutoScalingGroupName",
+                    "Value": {"Ref": "AutoScalingGroup"}
+                }],
+                "ComparisonOperator": "LessThanThreshold",
+                "MetricName": "CPUUtilization"
+            }
+        },
+        "NetworkLoadBalancer": {
+            "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+            "Properties": {
+                "Type": "network",
+                "Subnets": {
+                    "Fn::If": [
+                        "ShouldCreateVPC",
+                        [
+                            {"Ref": "Subnet1"},
+                            {"Ref": "Subnet2"}
+                        ],
+                        {"Ref": "SubnetIds"}
+                    ]
+                },
+                "LoadBalancerAttributes": [
+                    {
+                        "Key": "load_balancing.cross_zone.enabled",
+                        "Value": "true"
+                    }
+                ]
+            },
+            "DependsOn":"RouteTable"
+        },
+        "HttpListener": {
+            "Type": "AWS::ElasticLoadBalancingV2::Listener",
+            "Properties": {
+                "DefaultActions": [
+                    {
+                        "TargetGroupArn": {"Ref": "HttpTargetGroup"},
+                        "Type": "forward"
+                    }
+                ],
+                "LoadBalancerArn": {"Ref": "NetworkLoadBalancer"},
+                "Port": "80",
+                "Protocol": "TCP"
+            }
+        },
+        "HttpsListener": {
+            "Type": "AWS::ElasticLoadBalancingV2::Listener",
+            "Properties": {
+                "DefaultActions": [
+                    {
+                        "TargetGroupArn": {"Ref": "HttpsTargetGroup"},
+                        "Type": "forward"
+                    }
+                ],
+                "LoadBalancerArn": {"Ref": "NetworkLoadBalancer"},
+                "Port": "443",
+                "Protocol": "TCP"
+            }
+        },
+
+        "Vpc": {
+            "Type": "AWS::EC2::VPC",
+            "Condition": "ShouldCreateVPC",
+            "Properties": {
+                "CidrBlock": "10.0.0.0/16",
+                "EnableDnsHostnames": "true",
+                "EnableDnsSupport": "true"
+            }
+        },
+        "InternetGateway": {
+            "Type": "AWS::EC2::InternetGateway",
+            "Condition": "ShouldCreateVPC"
+        },
+        "VpcInternetGatewayAttachment": {
+            "Type": "AWS::EC2::VPCGatewayAttachment",
+            "Condition": "ShouldCreateVPC",
+            "Properties": {
+                "VpcId": {"Ref": "Vpc"},
+                "InternetGatewayId": {"Ref": "InternetGateway"}
+            }
+        },
+        "RouteTable": {
+          "Type": "AWS::EC2::RouteTable",
+          "Condition": "ShouldCreateVPC",
+          "Properties": {
+            "VpcId": {"Ref": "Vpc"}
+          }
+        },
+        "Route": {
+            "Type": "AWS::EC2::Route",
+            "Condition": "ShouldCreateVPC",
+            "Properties": {
+                "RouteTableId": {"Ref": "RouteTable"},
+                "DestinationCidrBlock": "0.0.0.0/0",
+                "GatewayId":  {"Fn::GetAtt": ["InternetGateway", "InternetGatewayId"]}
+            }
+        },
+        "Subnet1": {
+            "Type": "AWS::EC2::Subnet",
+            "Condition": "ShouldCreateVPC",
+            "Properties": {
+                "AvailabilityZone": {
+                    "Fn::Select": ["0", {"Fn::GetAZs": {"Ref": "AWS::Region"}}]
+                },
+                "CidrBlock": "10.0.0.0/20",
+                "MapPublicIpOnLaunch": "true",
+                "VpcId": {"Ref": "Vpc"}
+            }
+        },
+        "Subnet2": {
+            "Type": "AWS::EC2::Subnet",
+            "Condition": "ShouldCreateVPC",
+            "Properties": {
+                "AvailabilityZone": {
+                    "Fn::Select": ["1", {"Fn::GetAZs": {"Ref": "AWS::Region"}}]
+                },
+                "CidrBlock": "10.0.16.0/20",
+                "MapPublicIpOnLaunch": "true",
+                "VpcId": {"Ref": "Vpc"}
+            }
+        },
+        "Subnet1RouteTableAssociation": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Condition": "ShouldCreateVPC",
+            "Properties": {
+                "SubnetId": {"Ref": "Subnet1"},
+                "RouteTableId": {"Ref": "RouteTable"}
+            }
+        },
+        "Subnet2RouteTableAssociation": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Condition": "ShouldCreateVPC",
+            "Properties": {
+                "SubnetId": {"Ref": "Subnet2"},
+                "RouteTableId": {"Ref": "RouteTable"}
+            }
+        },
+        
+        "ElastiCacheSecurityGroupRule": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Condition": "ShouldCreateRedisCluster",
+            "Properties": {
+                "GroupId": {"Fn::GetAtt": ["InstanceSecurityGroup", "GroupId"]},
+                "IpProtocol": "tcp",
+                "FromPort": "6379",
+                "ToPort": "6379",
+                "SourceSecurityGroupId": {"Fn::GetAtt": ["InstanceSecurityGroup", "GroupId"]}
+            }
+        },
+        "ElastiCacheSubnetGroup": {
+            "Type": "AWS::ElastiCache::SubnetGroup",
+            "Condition": "ShouldCreateRedisCluster",
+            "Properties": {
+                "Description": "KongHQ Elasticache Redis Subnet Group",
+                "SubnetIds": {
+                    "Fn::If": [
+                        "ShouldCreateVPC",
+                        [
+                            {"Ref": "Subnet1"},
+                            {"Ref": "Subnet2"}
+                        ],
+                        {"Ref": "SubnetIds"}
+                    ]
+                }
+            }
+        },
+        "ElasticacheRedis": {
+            "Type": "AWS::ElastiCache::CacheCluster",
+            "Condition": "ShouldCreateRedisCluster",
+            "Properties": {
+                "CacheNodeType": "cache.t3.micro",
+                "CacheSubnetGroupName": {"Ref": "ElastiCacheSubnetGroup"},
+                "Engine": "redis",
+                "NumCacheNodes": "1",
+                "VpcSecurityGroupIds": [{"Fn::GetAtt": ["InstanceSecurityGroup", "GroupId"]}]
+            }
+        }
+    },
+    "Outputs": {
+        "NetworkLoadBalancerDNS": {
+            "Description": "The DNS of the Network Load Balancer",
+            "Value": {"Fn::GetAtt": ["NetworkLoadBalancer", "DNSName"]}
+        },
+        "ElasticacheRedisDNS": {
+            "Condition": "ShouldCreateRedisCluster",
+            "Description": "The DNS of the Elasticache Redis Cluster",
+            "Value": {"Fn::GetAtt": ["ElasticacheRedis", "RedisEndpoint.Address"]}
+        }
+    }
+}
