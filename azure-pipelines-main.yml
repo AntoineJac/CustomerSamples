@@ -1,0 +1,177 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+- pre
+- uat
+- test
+
+variables:
+  - ${{ if eq(variables['build.SourceBranchName'], 'main') }}:
+    - group: konnect-environment-prod
+  - ${{ if eq(variables['build.SourceBranchName'], 'pre') }}:
+    - group: konnect-environment-pre
+  - ${{ if eq(variables['build.SourceBranchName'], 'uat') }}:
+    - group: konnect-environment-uat
+  - ${{ if eq(variables['build.SourceBranchName'], 'test') }}:
+    - group: konnect-environment-test
+  - name: SERVICE_URL_HOST
+    value: beta-api.terone.showroomprive.net
+  - name: SERVICE_SWAGGER_PATH
+    value: /swagger/v1/swagger.json
+  - name: SERVICE_URL_PROTOCOL
+    value: https
+  - name: AUTO_APPROVED #application auto approved for internal api only
+    value: true
+  - name: API_ACCESS
+    value: internal
+
+jobs:
+- job: deployCustomerApi
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - checkout: self
+  - task: UseNode@1
+    inputs:
+      version: '16'
+  - script: |
+      if [ "$(build.SourceBranchName)" == "main" ]; then
+        echo "##vso[task.setvariable variable=KONNECT_CONTROL_PLANE;]$API_ACCESS"_"prod"
+      elif [ "$(build.SourceBranchName)" == "pre" ]; then
+        echo "##vso[task.setvariable variable=KONNECT_CONTROL_PLANE;]$API_ACCESS"_"pre"
+      elif [ "$(build.SourceBranchName)" == "uat" ]; then
+        echo "##vso[task.setvariable variable=KONNECT_CONTROL_PLANE;]$API_ACCESS"_"uat"
+      elif [ "$(build.SourceBranchName)" == "test" ]; then
+        echo "##vso[task.setvariable variable=KONNECT_CONTROL_PLANE;]$API_ACCESS"_"test"
+      fi
+    displayName: 'Set Control Plane Variable'
+  - script: |
+      API_SPEC_FILE="swagger.json"
+      API_SWAGGER_URL=$SERVICE_URL_PROTOCOL"://"$SERVICE_URL_HOST$SERVICE_SWAGGER_PATH
+      echo "##vso[task.setvariable variable=API_SPEC_FILE;]$API_SPEC_FILE"
+      curl -sL $API_SWAGGER_URL -o $API_SPEC_FILE
+    displayName: 'Download swagger locally'
+  - script: |
+      if [ -f "/$API_SPEC_FILE" ] || ! jq -e .info.title $API_SPEC_FILE > /dev/null; then
+        echo "Error: File either does not exist or is not a valid JSON"
+        exit 1
+      fi
+    displayName: 'Check File Existence and JSON Structure'
+  - script: |
+      curl -sL https://github.com/kong/deck/releases/download/v1.29.2/deck_1.29.2_linux_amd64.tar.gz -o deck.tar.gz
+      tar -xf deck.tar.gz -C /tmp
+      sudo cp /tmp/deck /usr/local/bin/
+    displayName: 'Install Deck'
+  - script: |
+      deck file openapi2kong -o konnect.yaml -s $API_SPEC_FILE
+    displayName: 'Convert API Specification to Kong file'
+  - script: |
+      SERVICE_NAME=$(yq e '.services[].name' konnect.yaml)
+      echo "##vso[task.setvariable variable=SERVICE_NAME;]$SERVICE_NAME"
+      for yamlfile in plugins/*.yaml; do
+        deck file patch -s "$yamlfile" -o "$yamlfile" --selector '$..plugins[*]' --value 'service: "'$SERVICE_NAME'"'
+      done
+    displayName: 'Replace the service name'
+  - script: |
+      API_PRODUCT_NAME=$KONNECT_CONTROL_PLANE"--"$SERVICE_NAME
+      PORTAL_PUBLISH="true"
+      deck file patch -s konnect.yaml -o konnect.yaml --selector '.services[*]' --value 'host: "'$SERVICE_URL_HOST'"'
+      deck file patch -s konnect.yaml -o konnect.yaml --selector '.services[*]' --value 'protocol: "'$SERVICE_URL_PROTOCOL'"'
+      deck file patch -s konnect.yaml -o konnect.yaml --selector '.services[*]' --value 'enabled: false'
+      echo "> Starting deck Sync on Control Plane:"$KONNECT_CONTROL_PLANE
+      deck gateway sync ./plugins konnect.yaml --konnect-addr "https://eu.api.konghq.com" --konnect-token $KONNECT_TOKEN --konnect-control-plane-name $KONNECT_CONTROL_PLANE --select-tag $SERVICE_NAME
+
+      if [ "$?" -ne 0 ]; then
+        echo "> Error during deck sync"
+        exit 1
+      fi
+
+      # create API product; update it if it exists
+
+      yq -i e '.servers[0].url |= "'"$KONNECT_PROXY_URL"'"' $API_SPEC_FILE -o json
+      yq -i e '.servers[0].description |= "Kong Production API Gateway Interface"' $API_SPEC_FILE -o json
+
+      if [ "$API_ACCESS" == "internal" ]; then
+        yq -i e '.security[0].ApiKeyAuth |= []' $API_SPEC_FILE -o json
+        yq -i e '.components.securitySchemes.ApiKeyAuth |= { "type": "apiKey", "in": "header", "name": "apikey" }' $API_SPEC_FILE -o json
+      fi
+
+      # export API_NAME=$(jq -r '.info.title' $API_SPEC_FILE)
+      API_DESCRIPTION=$(jq -r '.info.description // "description missing"' "$API_SPEC_FILE" | tr -d '\n')
+      API_VERSION=$(jq -r '.info.version' $API_SPEC_FILE)
+
+      CURRENT_PRODUCT_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" https://eu.api.konghq.com/v2/api-products -H "Content-Type: application/json" | jq -r '.data[] | select(.name == "'$API_PRODUCT_NAME'").id')
+      if [ -z "$CURRENT_PRODUCT_ID" ]; then
+        echo "> $API_PRODUCT_NAME not found already in API Products - creating it..."
+        CURRENT_PRODUCT_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -X POST https://eu.api.konghq.com/v2/api-products -d '{"name": "'"$API_PRODUCT_NAME"'", "description": "'"$API_DESCRIPTION"'"}' | jq -r '.id')
+      else
+        echo "> $API_PRODUCT_NAME already exists with ID $CURRENT_PRODUCT_ID"
+        curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -X PATCH https://eu.api.konghq.com/v2/api-products/$CURRENT_PRODUCT_ID -d '{"name": "'"$API_PRODUCT_NAME"'", "description": "'"$API_DESCRIPTION"'"}' > /dev/null 2>&1
+      fi
+
+      # create product version if it doesn't exist
+      CURRENT_PRODUCT_VERSION_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" "https://eu.api.konghq.com/v2/api-products/$CURRENT_PRODUCT_ID/product-versions?filter%5Bname%5D="$API_VERSION | jq -r '.data[0].id')
+      if [ "$CURRENT_PRODUCT_VERSION_ID" == "null" ]; then
+        echo "> Version $API_VERSION not found already in API Versions for $API_PRODUCT_NAME - creating it..."
+        CURRENT_PRODUCT_VERSION_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -X POST https://eu.api.konghq.com/v2/api-products/$CURRENT_PRODUCT_ID/product-versions -d '{"name": "'"$API_VERSION"'"}' | jq -r '.id')
+      else
+        echo "> API $API_PRODUCT_NAME already has a version with ID $CURRENT_PRODUCT_VERSION_ID - overwriting it"
+        CURRENT_PRODUCT_VERSION_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -X PATCH https://eu.api.konghq.com/v2/api-products/$CURRENT_PRODUCT_ID/product-versions/$CURRENT_PRODUCT_VERSION_ID -d '{"name": "'"$API_VERSION"'"}' | jq -r '.id')
+      fi
+
+      # retrieve RG and Service ID
+      CONTROL_PLANE_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" "https://eu.api.konghq.com/v2/control-planes?filter%5Bname%5D=$KONNECT_CONTROL_PLANE" | jq -r '.data[0].id')
+      SERVICE_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" https://eu.api.konghq.com/v2/control-planes/$CONTROL_PLANE_ID/core-entities/services | jq -r '.data[] | select(.name == "'"$SERVICE_NAME"'") | .id')
+
+      # upload the spec into this version, might as well overwrite the old one
+      CURRENT_API_SPEC_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" https://eu.api.konghq.com/v2/api-products/$CURRENT_PRODUCT_ID/product-versions/$CURRENT_PRODUCT_VERSION_ID/specifications | jq -r '.data[0].id')
+      if [ "$CURRENT_API_SPEC_ID" == "null" ]; then
+        echo "> Publishing spec document for API version $CURRENT_PRODUCT_VERSION_ID"
+        curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -X POST https://eu.api.konghq.com/v2/api-products/$CURRENT_PRODUCT_ID/product-versions/$CURRENT_PRODUCT_VERSION_ID/specifications -d '{"name": "oas.yaml", "content": "'"$(cat $API_SPEC_FILE | base64 | tr -d '\n')"'"}' > /dev/null 2>&1
+      else
+        echo "> API version $CURRENT_PRODUCT_VERSION_ID already has an API spec published - overwriting it"
+        curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -X PATCH https://eu.api.konghq.com/v2/api-products/$CURRENT_PRODUCT_ID/product-versions/$CURRENT_PRODUCT_VERSION_ID/specifications/$CURRENT_API_SPEC_ID -d '{"name": "oas.yaml", "content": "'"$(cat $API_SPEC_FILE | base64 | tr -d '\n')"'"}' > /dev/null 2>&1
+      fi
+
+      # create gateway service
+      CURRENT_PRODUCT_VERSION_GATEWAY_SERVICE_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" https://eu.api.konghq.com/v2/api-products/$CURRENT_PRODUCT_ID/product-versions/$CURRENT_PRODUCT_VERSION_ID | jq -r '.gateway_service.id')
+      if [ "$CURRENT_PRODUCT_VERSION_GATEWAY_SERVICE_ID" == "null" ]; then
+        echo "> Gateway Service not found already in API Versions $API_VERSION for $API_PRODUCT_NAME - creating it..."
+        CURRENT_PRODUCT_VERSION_GATEWAY_SERVICE_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -X PATCH "https://eu.api.konghq.com/v2/api-products/$CURRENT_PRODUCT_ID/product-versions/$CURRENT_PRODUCT_VERSION_ID" -d '{"gateway_service": { "id": "'"$SERVICE_ID"'", "control_plane_id": "'"$CONTROL_PLANE_ID"'"}}' | jq -r '.gateway_service.id')
+        if [ "$CURRENT_PRODUCT_VERSION_GATEWAY_SERVICE_ID" == "null" ]; then
+          echo "> Issue linking the gateway service check if another api products is not link to this service already"
+          exit 1
+        fi
+      else
+        echo "> Gateway for this version $API_VERSION already exists for API $API_PRODUCT_NAME with ID $CURRENT_PRODUCT_VERSION_GATEWAY_SERVICE_ID"
+      fi
+
+      # update portal publication settings
+      echo "> Updating version $API_VERSION Portal publication status"
+      curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -X PATCH https://eu.api.konghq.com/v2/api-products/$CURRENT_PRODUCT_ID/product-versions/$CURRENT_PRODUCT_VERSION_ID -d '{"deprecated": false, "publish_status": "published"}' > /dev/null 2>&1
+
+      PORTAL_ID=$(curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" https://eu.api.konghq.com/v2/portals | jq -r '.data[0].id')
+      if [ "$PORTAL_PUBLISH" == "true" ]; then
+        echo "> Publish Portal"
+        curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -X PUT https://eu.api.konghq.com/konnect-api/api/service_packages/$CURRENT_PRODUCT_ID/portals/$PORTAL_ID > /dev/null 2>&1
+      else
+        echo "> Unpublish Portal"
+        curl -s -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -X DELETE https://eu.api.konghq.com/konnect-api/api/service_packages/$CURRENT_PRODUCT_ID/portals/$PORTAL_ID > /dev/null 2>&1
+      fi
+
+      if [ "$API_ACCESS" == "internal" ]; then
+        AUTH_CONFIG=$(curl -s -X PUT "https://eu.api.konghq.com/konnect-api/api/application_registrations/service_versions/$CURRENT_PRODUCT_VERSION_ID" -H "Authorization: Bearer $KONNECT_TOKEN" -H "Content-Type: application/json" -d '{"auth_config": {"name": "key-auth", "config": {}}, "auto_approve": '$AUTO_APPROVED'}' | jq -r '.auth_config.name')
+      fi
+
+      if [ "$API_ACCESS" == "internal" ] && [ "$AUTH_CONFIG" != "key-auth" ]; then
+        echo "> Error API is internal and Auth config not enable on Dev Portal so the service is disable and exit"
+        exit 1
+      fi
+
+      deck file patch -s konnect.yaml -o konnect.yaml --selector '.services[*]' --value 'enabled: true'
+      deck gateway sync ./plugins konnect.yaml --konnect-addr "https://eu.api.konghq.com" --konnect-token $KONNECT_TOKEN --konnect-control-plane-name $KONNECT_CONTROL_PLANE --select-tag $SERVICE_NAME
+    displayName: 'Sync API to Gateway'
