@@ -1,0 +1,121 @@
+image:
+  repository: kong/kong-gateway
+  tag: "3.9"
+
+secretVolumes:
+- kong-cluster-cert
+
+admin:
+  enabled: false
+
+env:
+  role: data_plane
+  database: "off"
+  cluster_mtls: pki
+  cluster_control_plane: xxxx.eu.cp0.konghq.com:443
+  cluster_server_name: xxxx.eu.cp0.konghq.com
+  cluster_telemetry_endpoint: xxxx.eu.tp0.konghq.com:443
+  cluster_telemetry_server_name: xxxx.eu.tp0.konghq.com
+  cluster_cert: /etc/secrets/kong-cluster-cert/tls.crt
+  cluster_cert_key: /etc/secrets/kong-cluster-cert/tls.key
+  lua_ssl_trusted_certificate: system
+  konnect_mode: "on"
+  vitals: "off"
+  upstream_keepalive_max_requests: "100000"
+  nginx_http_keepalive_requests: "100000"
+  proxy_access_log: "off"
+  dns_stale_ttl: "3600"
+  router_flavor: expressions
+
+  ## Custom Nginx settings
+  nginx_worker_processes: "2" # match the CPU of the pods, 2
+  log_level: "notice"
+  tracing_sampling_rate: "0.01"
+  tracing_instrumentations: "off"
+  anonymous_reports: "off"
+  headers: "off"
+
+  ## If using a LB in front
+  # real_ip_header: "X-Forwarded-For"
+  # trusted_ips: "0.0.0.0/0,::/0"
+  # real_ip_recursive: "on"
+
+
+ingressController:
+  enabled: false
+  installCRDs: false
+
+resources:
+  limits:
+    # Use only memory limit with same value as requests
+    memory: "4Gi"
+  requests:
+    cpu: 2
+    memory: "4Gi"
+
+## Recommand sections:
+
+# Kong Pod Autoscaling
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  ## Otherwise for clusters that do support autoscaling/v2 or autoscaling/v2beta, use metrics
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          # could be adapted according to your traffic
+          averageUtilization: 75
+
+# Kong Pod Disruption Budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: "50%"
+  unhealthyPodEvictionPolicy: IfHealthyBudget
+
+# Update strategy
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: "100%"
+    maxUnavailable: "0%"
+
+# Affinity for pod assignment
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          ## could be any label such as app.kubernetes.io/instance: "{{ .Release.Name }}"
+          - key: app
+            operator: In
+            values:
+            - kong
+        topologyKey: kubernetes.io/hostname
+      weight: 100
+
+# Topology spread constraints for pod assignment (requires Kubernetes >= 1.19)
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: "topology.kubernetes.io/zone"
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        ## could be any label such as app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app: kong
+
+
+## Additional sections
+
+# Tolerations for pod assignment
+tolerations: []
+
+# Node labels for pod assignment
+nodeSelector: {}
+
+# Service Monitor for Prometheus Operator
+serviceMonitor: {}
