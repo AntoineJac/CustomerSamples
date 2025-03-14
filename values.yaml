@@ -108,6 +108,34 @@ topologySpreadConstraints:
         ## could be any label such as app.kubernetes.io/instance: "{{ .Release.Name }}"
         app: kong
 
+# Certificate management
+certificates:
+  enabled: true
+  # Set either `issuer` or `clusterIssuer` to the name of the desired cert manager issuer
+  # If left blank a built in self-signed issuer will be created and utilized
+  issuer: ""
+  clusterIssuer: ""
+  # Set proxy.enabled to true to issue default kong-proxy certificate with cert-manager
+  proxy:
+    enabled: true
+    commonName: "app.example"
+    # Remove the "[]" and uncomment/change the examples to add SANs
+    dnsNames: []
+    # - "app.example"
+    # - "*.apps.example"
+    # - "*.kong.example"
+
+# Specify Kong proxy service configuration
+proxy:
+  # Enable creating a Kubernetes service for the proxy
+  enabled: true
+  type: LoadBalancer
+  # Configures optional firewall rules and in the VPC network to only allow certain source ranges.
+  annotations: {}
+  # If terminating TLS at the ELB, the following annotations can be used
+  # "service.beta.kubernetes.io/azure-load-balancer-internal": false
+  labels:
+    enable-metrics: "true"
 
 ## Additional sections
 
