@@ -134,6 +134,7 @@ proxy:
   annotations: {}
   # If terminating TLS at the ELB, the following annotations can be used
   # "service.beta.kubernetes.io/azure-load-balancer-internal": false
+  # "service.beta.kubernetes.io/azure-load-balancer-ipv4": xx.xxx.xx.xx
   labels:
     enable-metrics: "true"
 
